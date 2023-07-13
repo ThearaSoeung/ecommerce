@@ -4,7 +4,12 @@ const path = require('path');
 const rootDir = require('../../util/path');
 
 router.get('/product', (req, res, next) => {
-    res.sendfile(path.join(rootDir, 'views', 'product.html'));
+    res.render('product', {
+        pageTitle: 'Add Product',
+        path: '/product',
+        formsCSS: true,
+        productCSS: true,
+    });
 });
 
 module.exports = router;
