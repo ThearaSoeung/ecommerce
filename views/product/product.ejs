@@ -1,0 +1,26 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>Product Page</title>
+  <link rel="stylesheet" href="css/product.css">
+</head> -->
+
+<%- include('../includes/header.ejs') %>
+<link rel="stylesheet" href="css/product.css">
+
+<%- include('../includes/navigation.ejs') %>
+
+<body>
+  <h1>Product Page</h1>
+
+  <div class="product">
+    <img src="https://images.pexels.com/photos/13661636/pexels-photo-13661636.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Product Image">
+    <div class="product-info">
+      <h2 class="product-title">Product Name</h2>
+      <p class="product-description">Product description goes here.</p>
+      <p class="product-price">$19.99</p>
+      <button class="buy-button">Buy Now</button>
+    </div>
+  </div>
+
+<%- include('../includes/footer.ejs') %>
