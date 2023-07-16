@@ -1,8 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const pathToJSON = path.join(__dirname,'..','data','product.json');
-console.log(pathToJSON); 
+const pathToJSON = path.join(__dirname,'..','data','product.json');  
 
 const getProductFromFile = cb => {
   fs.readFile(pathToJSON, (err, fileContent) => {
@@ -32,7 +31,7 @@ module.exports = class Product {
               console.log(err);
             });
           });
-    }
+    } 
     static fetchAll(cb) {
         getProductFromFile(cb);
     }

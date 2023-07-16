@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "node-terminal",
+            "name": "NodJS Debug",
+            "request": "launch",
+            "command": "npm start",
+            "cwd": "${workspaceFolder}/MCV-Practice",
+            "skipFiles": [
+                //"<node_internals>/**"
+            ]
+        }
+    ]
+}

@@ -2,11 +2,11 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 
+const notFoundController = require('./controllers/not-found');
+
 //Registering routes
-const landingPageRoute = require('./routes/landing-page');
-const addProductRoute = require('./routes/add-product');
-const notFoundRoute = require('./routes/not-found');
-const productRoute = require('./routes/product');
+const adminRoute = require('./routes/admin');
+const shopRoute = require('./routes/shop');
 
 const app = express();
 
@@ -20,9 +20,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Using the routes
-app.use(landingPageRoute); 
-app.use(productRoute);
-app.use(addProductRoute);
-app.use(notFoundRoute); 
+app.use(shopRoute);
+app.use(adminRoute); 
+app.use(notFoundController.getNotFoundPage);
 
 app.listen(2000); 
