@@ -8,11 +8,11 @@ exports.getAddProduct = (req, res, next) => {
         productCSS: true,
     });
 }; 
-
 exports.postAddProduct = (req, res, next) => {
-    const product = new Product(req.body.title);
+    const product = new Product(req.body);
     product.save();
     res.redirect('/');
 }; 
 
 
+ 
