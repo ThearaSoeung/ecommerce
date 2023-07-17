@@ -1,5 +1,5 @@
 <%- include('../includes/header.ejs') %>
-<link rel="stylesheet" href="css/add_product.css">
+<link rel="stylesheet" href="/css/add_product.css">
 <%- include('../includes/navigation.ejs') %>
  
 </head>
@@ -7,13 +7,28 @@
   <div class="container">
     <h1>Add Product</h1>
     <form method="post">
+ 
+        <div class="form-group">
+          <label for="product-name">Product Name:</label>
+          <input type="text" id="product-name" name="product_name" placeholder="Enter product name" required>
+        </div>
+
       <div class="form-group">
-        <label for="product-name">Product Name:</label>
-        <input type="text" id="product-name" name="product-name" placeholder="Enter product name" required>
+        <label for="product-name">Image Url:</label>
+        <input type="text" id="product-name" name="product_image_url" placeholder="Enter image url" required>
       </div>
+
       <div class="form-group">
-        <input type="submit" class="btn" value="Add">
+        <label for="product-name">Price:</label>
+        <input type="text" id="product-name" name="product_price" placeholder="Enter price" required>
       </div>
+
+      <div class="form-group">
+        <label for="product-name">Description</label>
+        <input type="text" id="product-name" name="product_description" placeholder="Enter description" required>
+      </div>
+      
+      <input type="submit" class="btn" value="Add">
     </form>
   </div>
   

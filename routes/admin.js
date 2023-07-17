@@ -7,6 +7,10 @@ const adminController = require('../controllers/admin');
 
 router.get('/admin/add', adminController.getAddProduct);
 router.post('/admin/add', adminController.postAddProduct);
+router.get('/admin/delete', adminController.getDeletedProduct);
+router.delete('/admin/delete', adminController.deleteProduct);
+router.get('/admin/edit', adminController.getEditedProduct);
+router.put('/admin/edit', adminController.editProduct);
 
 //Todo 
 router.get('/admin', adminController.getAdminProducts);

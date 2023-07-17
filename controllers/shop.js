@@ -21,6 +21,16 @@ exports.getProduct = (req, res, next) => {
     });
 }; 
 
+exports.postProduct = (req, res, next) => {
+    res.render('shop/cart', {
+        pageTitle: 'Cart',
+        path: '/',
+        formsCSS: true,
+        productCSS: true,
+        activeAddProduct: true
+    });
+}; 
+
 exports.getCart = (req, res, next) => {
     res.render('shop/cart', {
         pageTitle: 'Cart',
@@ -39,4 +49,8 @@ exports.getOrders = (req, res, next) => {
         productCSS: true,
         activeAddProduct: true
     });
+}; 
+
+exports.postCart = (req, res, next) => {
+    res.redirect('/shop/cart');
 }; 

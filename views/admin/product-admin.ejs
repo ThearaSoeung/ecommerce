@@ -1,9 +1,35 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>Product Page</title>
+  <link rel="stylesheet" href="css/product.css">
+</head> -->
+
 <%- include('../includes/header.ejs') %>
-<link rel="stylesheet" href="css/product.css">
+<link rel="stylesheet" href="/css/product.css">
 <%- include('../includes/navigation.ejs') %>
 
-<h1>Product Admin</h1>
+<body>
+  <h1>Product Page</h1>
 
+<!-- product.ejs -->
+<% for (let i = 0; i < products.length; i++) { %>
+    <div class="product">
+      <!-- https://images.pexels.com/photos/13661636/pexels-photo-13661636.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2 -->
+      <img src="https://images.pexels.com/photos/13661636/pexels-photo-13661636.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Product Image">
+      <div class="product-info">
+        <h1 class="product-title"><%= products[i].title %> </h1>
+        <p class="product-description"> <%=products[i].description%> </p>
+        <p class="product-price"> <%=products[i].price%> $</p>
+          <form action="/admin/delete" method="delete">
+            <button class="buy-button" name="buy-now">Delete</button> 
+          </form>
+          <form action="/admin/edit" method="put">
+            <button class="buy-button" name="" >Edit</button>
+          </form>
+      </div>
+    </div>
+<% } %>
 
 
 <%- include('../includes/footer.ejs') %>
