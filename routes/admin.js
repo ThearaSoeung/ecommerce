@@ -8,8 +8,11 @@ const adminController = require('../controllers/admin');
 router.get('/admin/add', adminController.getAddProduct);
 router.post('/admin/add', adminController.postAddProduct);
 router.get('/admin/delete', adminController.getDeletedProduct);
-router.delete('/admin/delete', adminController.deleteProduct);
-router.get('/admin/edit', adminController.getEditedProduct);
+router.get('/admin/delete/:id', adminController.deleteProductById);
+router.delete('/admin/delete', adminController.DeletedProduct);
+
+router.get('/admin/edit/:id', adminController.getEditedProductById);
+router.post('/admin/edit/:id', adminController.postEditedProductById);
 router.put('/admin/edit', adminController.editProduct);
 
 //Todo 

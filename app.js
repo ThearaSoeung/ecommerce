@@ -2,6 +2,9 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 
+const db = require('./util/database');
+
+
 const notFoundController = require('./controllers/not-found');
 
 //Registering routes
