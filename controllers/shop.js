@@ -1,5 +1,5 @@
-const { error } = require('console');
-const Product = require('../models/product');
+const {Product, ProductModel} = require('../models/Product');
+const sequelize = require('../util/database')
 
 exports.getLandingPage = (req, res, next) => {
     res.render('shop/index', {
@@ -11,20 +11,20 @@ exports.getLandingPage = (req, res, next) => {
     });
 }; 
 
-exports.getProduct = (req, res, next) => {
-    Product.fetchAll()
-    .then((result)=>{
+exports.getProduct = async (req, res, next) => {
+    try {
+        const products = await ProductModel.findAll();
+        const productsData = products.map(product => product.dataValues);
         res.render('shop/product', {
             pageTitle: 'Product',
             formsCSS: true,
             productCSS: true,
-            products: result[0],
+            products: productsData,
         });
-    })
-    .catch((error)=>{
-        console.log(error);
-    })
-}; 
+    } catch (error) {
+        console.log("error:", error);
+    }
+};
 
 exports.postProduct = (req, res, next) => {
     res.render('shop/cart', {
@@ -57,7 +57,7 @@ exports.getOrders = (req, res, next) => {
     });
 }; 
 exports.getProdectDetailById = (req, res, next) => {
-    Product.findById(req.params.productId)
+    ProductModel.findByPk(req.params.productId)
     .then((product)=>{
         res.render('shop/product-detail', {
             pageTitle: 'Order',
@@ -65,7 +65,7 @@ exports.getProdectDetailById = (req, res, next) => {
             formsCSS: true,
             productCSS: true,
             activeAddProduct: true,
-            product: product[0][0]
+            product: product.dataValues
         });
     })
     .catch(()=>{
@@ -78,10 +78,10 @@ exports.postCart = (req, res, next) => {
 };
 
 exports.addCartById = (req, res, next) => {
-    Product.findById(req.params.id)
+    ProductModel.findByPk(req.params.id)
     .then((product)=>{
         res.render('shop/cart',{
-            product: product[0][0]
+            product: product.dataValues
         })
     })
     .catch((err)=>{

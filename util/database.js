@@ -1,12 +1,20 @@
-const mysql = require('mysql2');
+const Squelize = require('sequelize'); 
+const squelize = new Squelize({
+    database: 'new_schema',
+    username: 'root', 
+    password: 'Theara011802399',
+    host: '127.0.0.1', 
+    dialect: 'mysql' 
+}); 
 
-const pool = mysql.createPool({
-    host: '127.0.0.1',
-    user: 'root',
-    database: 'my_mvc_schema',
-    password: 'Theara011802399'
-});
+squelize.sync()
 
-module.exports = pool.promise();
+.then(()=>{
+})
+.catch((error)=>{
+    console.log("Error", error);
+})
+
+module.exports = squelize;
 
 
