@@ -1,9 +1,16 @@
-// models/User.js
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../sequelizeInstance'); // Reuse the Sequelize instance
+const Squelize = require("sequelize");
 
-const User = sequelize.define('User', {
-  username: DataTypes.STRING,
+const squelize = require("../util/database");
+
+const User = squelize.define("User", {
+  id: {
+    type: squelize.DataTypes.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true,
+  },
+  name: Squelize.DataTypes.STRING,
+  email: Squelize.DataTypes.STRING,
 });
 
 module.exports = User;

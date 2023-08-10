@@ -1,13 +1,18 @@
-<%- include('../includes/header.ejs') %>
-<%- include('../includes/navigation.ejs') %>
-<link rel="stylesheet" href="/css/product.css">
-<link rel="stylesheet" href="/css/main.css">
+<%- include('../includes/header.ejs') %> <%-
+include('../includes/navigation.ejs') %>
+<link rel="stylesheet" href="/css/product.css" />
+<link rel="stylesheet" href="/css/main.css" />
 
 <h1>Product Details</h1>
 
 <h2><%= product.title %></h2>
 
-<img src="<%= product.imageUrl %>" alt="Product Image" width="400" height="400">
+<img
+  src="<%= product.imageUrl %>"
+  alt="Product Image"
+  width="400"
+  height="400"
+/>
 
 <p class="product-price"><%= product.price %>$</p>
 <p><%= product.descriptions%></p>

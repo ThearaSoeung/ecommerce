@@ -1,30 +1,33 @@
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
+const express = require("express");
+const path = require("path");
+const bodyParser = require("body-parser");
+const squelize = require("./util/database");
 
-const db = require('./util/database');
-
-
-const notFoundController = require('./controllers/not-found');
+const notFoundController = require("./controllers/not-found");
 
 //Registering routes
-const adminRoute = require('./routes/admin');
-const shopRoute = require('./routes/shop');
+const adminRoute = require("./routes/admin");
+const shopRoute = require("./routes/shop");
 
 const app = express();
 
 //Using EJS as the view engine
-app.set('view engine', 'ejs');
-app.set('views', 'views');
+app.set("view engine", "ejs");
+app.set("views", "views");
 
 //Middleware to parse the body of the request
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 //Middleware to serve static files from the public folder
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
 //Using the routes
 app.use(shopRoute);
-app.use(adminRoute); 
+app.use(adminRoute);
 app.use(notFoundController.getNotFoundPage);
 
-app.listen(2000); 
+squelize
+  .sync()
+  .then((result) => {
+    app.listen(2000);
+  })
+  .catch((err) => {});

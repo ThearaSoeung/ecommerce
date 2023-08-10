@@ -1,8 +1,10 @@
-const Squelize = require('sequelize'); 
+const Squelize = require("sequelize");
 
-const squelize = require('../util/database')
+const squelize = require("../util/database");
 
-const ProductModel = squelize.define('Product', {
+const ProductModel = squelize.define(
+  "Product",
+  {
     id: {
       type: Squelize.INTEGER,
       allowNull: false,
@@ -25,14 +27,16 @@ const ProductModel = squelize.define('Product', {
       type: Squelize.TEXT,
       allowNull: false,
     },
-  },{
+  },
+  {
     timestamps: false,
-  });
+  }
+);
 
-const Product = squelize.define('Product', {
+const Product = squelize.define("Product", {
   productName: Squelize.DataTypes.STRING,
 });
-  
-squelize.sync(); 
 
-module.exports = {Product, ProductModel};
+squelize.sync();
+
+module.exports = { Product, ProductModel };

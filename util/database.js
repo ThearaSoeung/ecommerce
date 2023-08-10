@@ -1,20 +1,18 @@
-const Squelize = require('sequelize'); 
+const Squelize = require("sequelize");
 const squelize = new Squelize({
-    database: 'new_schema',
-    username: 'root', 
-    password: 'Theara011802399',
-    host: '127.0.0.1', 
-    dialect: 'mysql' 
-}); 
+  database: "new_schema",
+  username: "root",
+  password: "Theara011802399",
+  host: "127.0.0.1",
+  dialect: "mysql",
+});
 
-squelize.sync()
+squelize
+  .sync()
 
-.then(()=>{
-})
-.catch((error)=>{
+  .then(() => {})
+  .catch((error) => {
     console.log("Error", error);
-})
+  });
 
 module.exports = squelize;
-
-

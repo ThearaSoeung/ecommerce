@@ -1,4 +1,4 @@
-const {Product, ProductModel} = require("../models/Product");
+const { ProductModel } = require("../models/Product");
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/add_product", {
@@ -9,7 +9,7 @@ exports.getAddProduct = (req, res, next) => {
   });
 };
 exports.postAddProduct = (req, res, next) => {
-    ProductModel.create({
+  ProductModel.create({
     id: Math.floor(Math.random() * 100) + 1,
     title: req.body.product_name,
     price: req.body.product_price,
@@ -24,7 +24,7 @@ exports.postAddProduct = (req, res, next) => {
     });
 };
 exports.getAdminProducts = (req, res, next) => {
-    ProductModel.findAll()
+  ProductModel.findAll()
     .then((result) => {
       const productsData = result.map((product) => product.dataValues);
       res.render("admin/product-admin", {
@@ -39,7 +39,7 @@ exports.getAdminProducts = (req, res, next) => {
     });
 };
 exports.deleteProductById = (req, res) => {
-    ProductModel.destroy({
+  ProductModel.destroy({
     where: {
       id: req.params.id,
     },
@@ -51,28 +51,9 @@ exports.deleteProductById = (req, res) => {
       console.log(error);
     });
 };
-exports.getDeletedProduct = (req, res, next) => {
-  res.render("admin/remove_product", {
-    pageTitle: "Add Product",
-    path: "",
-    formsCSS: true,
-    productCSS: true,
-  });
-};
-exports.DeletedProduct = (req, res, next) => {
-  res.render("admin/remove_product", {
-    pageTitle: "Add Product",
-    path: "",
-    formsCSS: true,
-    productCSS: true,
-  });
-};
-exports.editProduct = (req, res, next) => {
-  res.redirect("admin/edit");
-  req.next();
-};
+
 exports.getEditedProductById = (req, res) => {
-    ProductModel.findByPk(req.params.id)
+  ProductModel.findByPk(req.params.id)
     .then((product) => {
       res.render("admin/edit_product", {
         pageTitle: "Admin edit",
@@ -97,7 +78,7 @@ exports.postEditedProductById = async (req, res) => {
       imageUrl: req.body.product_image_url,
     };
     if (value) {
-        ProductModel.update(value, {
+      ProductModel.update(value, {
         where: {
           id: req.params.id,
         },
