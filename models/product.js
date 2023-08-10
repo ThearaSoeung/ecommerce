@@ -1,42 +1,37 @@
-const Squelize = require("sequelize");
+const Sequelize = require("sequelize");
 
-const squelize = require("../util/database");
+const sequelize = require("../util/database");
 
-const ProductModel = squelize.define(
+const ProductModel = sequelize.define(
   "Product",
   {
     id: {
-      type: Squelize.INTEGER,
+      type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
     title: {
-      type: Squelize.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
     },
     price: {
-      type: Squelize.DECIMAL(10, 2),
+      type: Sequelize.DECIMAL(10, 2),
       allowNull: false,
     },
     imageUrl: {
-      type: Squelize.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
     },
     descriptions: {
-      type: Squelize.TEXT,
+      type: Sequelize.TEXT,
       allowNull: false,
     },
   },
-  {
-    timestamps: false,
-  }
 );
 
-const Product = squelize.define("Product", {
-  productName: Squelize.DataTypes.STRING,
-});
+// const Product = sequelize.define("Product", {
+//   productName: Sequelize.DataTypes.STRING,
+// });
 
-squelize.sync();
-
-module.exports = { Product, ProductModel };
+module.exports = { ProductModel };

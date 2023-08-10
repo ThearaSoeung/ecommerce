@@ -1,7 +1,8 @@
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
-const squelize = require("./util/database");
+const sequelize = require("./util/database");
+const {User} = require('./models/index')
 
 const notFoundController = require("./controllers/not-found");
 
@@ -25,9 +26,19 @@ app.use(shopRoute);
 app.use(adminRoute);
 app.use(notFoundController.getNotFoundPage);
 
-squelize
+sequelize
   .sync()
-  .then((result) => {
-    app.listen(2000);
+  .then(result => {
+    return User.findByPk(1)
+  })
+  .then(user=>{
+    if(!user){
+        return User.create({name:"Theara", email: "thearasoeung123@gmail.com"});
+    }
+    return user;
+  })
+  .then(user=>{
+    console.log(user.dataValues);
+    app.listen(2000);   
   })
   .catch((err) => {});

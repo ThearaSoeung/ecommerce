@@ -1,17 +1,12 @@
-const squelize = require("../util/database");
+const sequelize = require("../util/database");
 const User = require("./user");
-const { Product } = require("./Product");
+const { ProductModel } = require("./Product");
 
-User.hasMany(Product, {
-  as: "products",
-  foreignKey: "userId",
+ProductModel.belongsTo(User, {
+  constraints: true, 
+  onDelete: "CASCADE"
 });
 
-Product.belongsTo(User, {
-  as: "user",
-  foreignKey: "userId",
-});
+User.hasMany(ProductModel);
 
-squelize.sync();
-
-module.exports = { User, Product };
+module.exports = { User, ProductModel };

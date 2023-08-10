@@ -1,5 +1,5 @@
-const Squelize = require("sequelize");
-const squelize = new Squelize({
+const Sequelize = require("sequelize");
+const sequelize = new Sequelize({
   database: "new_schema",
   username: "root",
   password: "Theara011802399",
@@ -7,12 +7,4 @@ const squelize = new Squelize({
   dialect: "mysql",
 });
 
-squelize
-  .sync()
-
-  .then(() => {})
-  .catch((error) => {
-    console.log("Error", error);
-  });
-
-module.exports = squelize;
+module.exports = sequelize;

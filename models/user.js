@@ -1,16 +1,16 @@
-const Squelize = require("sequelize");
+const Sequelize = require("sequelize");
 
-const squelize = require("../util/database");
+const sequelize = require("../util/database");
 
-const User = squelize.define("User", {
+const User = sequelize.define("User", {
   id: {
-    type: squelize.DataTypes.INTEGER,
+    type: Sequelize.DataTypes.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
   },
-  name: Squelize.DataTypes.STRING,
-  email: Squelize.DataTypes.STRING,
+  name: Sequelize.DataTypes.STRING,
+  email: Sequelize.DataTypes.STRING,
 });
 
 module.exports = User;
