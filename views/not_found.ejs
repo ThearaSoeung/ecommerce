@@ -1,9 +1,10 @@
-<%- include('includes/header.ejs') %>
+<%- include('./includes/header.ejs') %> <%-
+include('./includes/navigation.ejs') %>
 <link rel="stylesheet" href="/css/not_found.css" />
-<%- include('includes/navigation.ejs') %>
+<link rel="stylesheet" href="/css/main.css" />
+
 <body>
   <div class="container">
-    <h1>404 Not Found</h1>
     <p class="error-code">Error code: 404</p>
     <p class="error-message">The page you requested could not be found.</p>
     <p>Please check the URL or go back to the <a href="/">homepage</a>.</p>

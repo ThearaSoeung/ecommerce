@@ -1,9 +1,8 @@
 const Sequelize = require("sequelize");
-
 const sequelize = require("../util/database");
 
-const ProductModel = sequelize.define(
-  "Product",
+const Product = sequelize.define(
+  "product",
   {
     id: {
       type: Sequelize.INTEGER,
@@ -30,8 +29,4 @@ const ProductModel = sequelize.define(
   },
 );
 
-// const Product = sequelize.define("Product", {
-//   productName: Sequelize.DataTypes.STRING,
-// });
-
-module.exports = { ProductModel };
+module.exports = { Product };

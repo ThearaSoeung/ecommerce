@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
 const sequelize = require("./util/database");
-const {User} = require('./models/index')
+const {User} = require('./models/associations')
 
 const notFoundController = require("./controllers/not-found");
 
@@ -16,6 +16,16 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+//Middleware
+app.use((req, res, next)=>{
+    User.findByPk(1)
+    .then(user=>{
+        req.user = user.dataValues;
+        next();
+    })
+    .catch(err=>console.log(err))
+})
+
 //Middleware to parse the body of the request
 app.use(bodyParser.urlencoded({ extended: false }));
 //Middleware to serve static files from the public folder
@@ -27,7 +37,7 @@ app.use(adminRoute);
 app.use(notFoundController.getNotFoundPage);
 
 sequelize
-  .sync()
+  .sync({force: false})
   .then(result => {
     return User.findByPk(1)
   })
@@ -38,7 +48,6 @@ sequelize
     return user;
   })
   .then(user=>{
-    console.log(user.dataValues);
     app.listen(2000);   
   })
   .catch((err) => {});

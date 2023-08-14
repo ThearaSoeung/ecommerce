@@ -17,7 +17,7 @@ include('../includes/navigation.ejs') %>
 <p class="product-price"><%= product.price %>$</p>
 <p><%= product.descriptions%></p>
 
-<form action="/cart/<%= product.id %>" method="get">
+<form action="/cart/<%= product.id %>" method="post">
   <button class="primary-button">Add to cart</button>
 </form>
 

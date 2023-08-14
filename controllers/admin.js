@@ -1,4 +1,4 @@
-const { ProductModel } = require("../models/Product");
+const { Product } = require("../models/Product");
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/add_product", {
@@ -8,13 +8,15 @@ exports.getAddProduct = (req, res, next) => {
     productCSS: true,
   });
 };
+
 exports.postAddProduct = (req, res, next) => {
-  ProductModel.create({
+  Product.create({
     id: Math.floor(Math.random() * 100) + 1,
     title: req.body.product_name,
     price: req.body.product_price,
     descriptions: req.body.product_description,
     imageUrl: req.body.product_image_url,
+    userId: req.user.id
   })
     .then(() => {
       res.redirect("/admin");
@@ -23,8 +25,9 @@ exports.postAddProduct = (req, res, next) => {
       console.log(err);
     });
 };
+
 exports.getAdminProducts = (req, res, next) => {
-  ProductModel.findAll()
+  Product.findAll()
     .then((result) => {
       const productsData = result.map((product) => product.dataValues);
       res.render("admin/product-admin", {
@@ -38,8 +41,9 @@ exports.getAdminProducts = (req, res, next) => {
       console.log(err);
     });
 };
+
 exports.deleteProductById = (req, res) => {
-  ProductModel.destroy({
+  Product.destroy({
     where: {
       id: req.params.id,
     },
@@ -53,7 +57,7 @@ exports.deleteProductById = (req, res) => {
 };
 
 exports.getEditedProductById = (req, res) => {
-  ProductModel.findByPk(req.params.id)
+  Product.findByPk(req.params.id)
     .then((product) => {
       res.render("admin/edit_product", {
         pageTitle: "Admin edit",
@@ -68,9 +72,10 @@ exports.getEditedProductById = (req, res) => {
       console.log(err);
     });
 };
+
 exports.postEditedProductById = async (req, res) => {
   try {
-    const result = await ProductModel.findByPk(req.params.id);
+    const result = await Product.findByPk(req.params.id);
     value = {
       title: req.body.product_name,
       price: req.body.product_price,
@@ -78,7 +83,7 @@ exports.postEditedProductById = async (req, res) => {
       imageUrl: req.body.product_image_url,
     };
     if (value) {
-      ProductModel.update(value, {
+      Product.update(value, {
         where: {
           id: req.params.id,
         },

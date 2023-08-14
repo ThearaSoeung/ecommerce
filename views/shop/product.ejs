@@ -25,7 +25,7 @@ include('../includes/navigation.ejs') %>
       <form action="/shop/products/<%= products[i].id %>" method="get">
         <button class="primary-button" name="buy-now-btn">Details</button>
       </form>
-      <form action="/cart/<%= products[i].id %>">
+      <form action="/cart/<%= products[i].id %>" method="post">
         <button class="primary-button" name="cart-btn">Add to Cart</button>
       </form>
     </div>
