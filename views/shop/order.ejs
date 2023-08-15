@@ -1,8 +1,43 @@
-<%- include('../includes/header.ejs') %> <%-
-include('../includes/navigation.ejs') %>
+<%- include('../includes/header.ejs') %> 
+<%- include('../includes/navigation.ejs') %>
 <link rel="stylesheet" href="/css/product.css" />
 <link rel="stylesheet" href="/css/main.css" />
 
-<h1>Order</h1>
+<h1>Orders</h1>
+
+<div class="product">
+  <% if (orderItemList.length === 0) { %>
+    <h3>You don't have any order.</h3>
+  <% } else { %>
+    <ul>
+        <% let totalPrice = 0; %>
+        <% orderItemList.forEach(cartItem => {
+          const product = formattedProduct.find(product => product.id === cartItem.productId);
+          const itemTotalPrice = product.price * cartItem.quantity;
+          totalPrice += itemTotalPrice;
+        %>
+          <div class="cart-item">
+            <div class="cart-item-details">
+              <img src="<%= product.imageUrl %>" alt="Product Image" />
+              <div class="product-info">
+                <h1 class="product-title"><%= product.title %></h1>
+                <h4><%=cartItem.quantity%> x <%= product.price %> $</h4>
+                
+                <p>Total Price: <%= itemTotalPrice %> USD</p>
+              </div>
+              <div class="cart-item-actions">
+              </div>
+            </div>
+          </div>
+        <% }); %>
+        <h2 class="total-cart-price">Total Price for all Items: <%= totalPrice %> USD</h2>
+        <button class="primary-button">Order</button>
+        <form action="/shop/orders/remove" method="POST">
+            <button class="primary-button">Remove all orders</button>
+        </form>
+      </ul>
+            
+  <% } %>
+</div>
 
 <%- include('../includes/footer.ejs') %>

@@ -3,30 +3,44 @@
 <link rel="stylesheet" href="/css/product.css" />
 <link rel="stylesheet" href="/css/main.css" />
 
-<h1>Carts</h1>
+<h1>Shopping Carts</h1>
 
 <div class="product">
   <% if (cartItems.length === 0) { %>
-    <p>Your cart is empty.</p>
+    <h3>Your cart is empty.</h3>
   <% } else { %>
     <ul>
-      <% cartItems.forEach(cartItem => { %>
+        <% let totalPrice = 0; %>
+        <% cartItems.forEach(cartItem => {
+          const product = formattedProduct.find(product => product.id === cartItem.productId);
+          const itemTotalPrice = product.price * cartItem.quantity;
+          totalPrice += itemTotalPrice;
+        %>
           <div class="cart-item">
             <div class="cart-item-details">
-            <img src="<%= formattedProduct.find(product => product.id === cartItem.productId).imageUrl %>" alt="Product Image" />
-            <div class="product-info">
-                <h1 class="product-title"><%= formattedProduct.find(product => product.id === cartItem.productId).title %></h1>
-                <p class="product-price"><%=formattedProduct.find(product => product.id === cartItem.productId).price%> $</p>
-
-              <h2><%= cartItem.quantity %> x <%= formattedProduct.find(product => product.id === cartItem.productId).name %></h2>
-              <p><%= formattedProduct.find(product => product.id === cartItem.productId).price %> USD each</p>
-            </div>
-            <div class="cart-item-actions">
-              <!-- Add any actions you want for each cart item here -->
+              <img src="<%= product.imageUrl %>" alt="Product Image" />
+              <div class="product-info">
+                <h1 class="product-title"><%= product.title %></h1>
+                <p class="product-price"><%= product.price %> USD each</p>
+                <form action="/cart/update/<%= cartItem.id %>" method="POST">
+                  <input type="number" value="<%= cartItem.quantity %>" name="quantity">
+                </form>
+                <form action="/cart/remove/<%= cartItem.id %>" method="POST">
+                  <button>Remove</button>
+                </form>
+                <p>Total Price: <%= itemTotalPrice %> USD</p>
+              </div>
+              <div class="cart-item-actions">
+              </div>
             </div>
           </div>
-      <% }); %>
-    </ul>
+        <% }); %>
+        <h2 class="total-cart-price">Total Price for all Items: <%= totalPrice %> USD</h2>
+        <form action="/shop/orders" method="POST">
+            <button class="primary-button">Order</button>
+        </form>
+      </ul>
+            
   <% } %>
 </div>
 
