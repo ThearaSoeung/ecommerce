@@ -21,10 +21,10 @@ include('../includes/navigation.ejs') %>
       <h1 class="product-title"><%= products[i].title %></h1>
       <p class="product-description"><%=products[i].description%></p>
       <p class="product-price"><%=products[i].price%> $</p>
-      <form action="/admin/delete/<%= products[i].id%>" method="delete">
+      <form action="/admin/delete/<%=products[i]._id.toString()%>" method="delete">
         <button class="primary-button" name="buy-now">Delete</button>
       </form>
-      <form action="/admin/edit/<%= products[i].id%>" method="put">
+      <form action="/admin/edit/<%= products[i]._id.toString()%>" method="put">
         <button class="primary-button" name="">Edit</button>
       </form>
     </div>

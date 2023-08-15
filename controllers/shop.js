@@ -16,13 +16,12 @@ exports.getLandingPage = (req, res, next) => {
 
 exports.getProduct = async (req, res, next) => {
   try {
-    const products = await Product.findAll();
-    const productsData = products.map((product) => product.dataValues);
+    const products = await Product.fetchAll();
     res.render("shop/product", {
       pageTitle: "Product",
       formsCSS: true,
       productCSS: true,
-      products: productsData,
+      products: products,
     });
   } catch (error) {
     console.log("error:", error);
@@ -211,7 +210,7 @@ exports.removeAllOrdersFromUser = async (req, res, next) => {
   })
 };
 exports.getProdectDetailById = (req, res, next) => {
-  Product.findByPk(req.params.productId)
+  Product.fetchOne(req.params.productId)
     .then((product) => {
       res.render("shop/product-detail", {
         pageTitle: "Order",
@@ -219,7 +218,7 @@ exports.getProdectDetailById = (req, res, next) => {
         formsCSS: true,
         productCSS: true,
         activeAddProduct: true,
-        product: product.dataValues,
+        product: product
       });
     })
     .catch(() => {
