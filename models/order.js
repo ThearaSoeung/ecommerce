@@ -116,7 +116,6 @@ class Order {
   static async removeAllOrdersFromUser(userId){
     try {
       const db = getDb();
-      console.log("Called!!!");
       return await db.collection('orders').updateOne(
         {'user._id': new ObjectId(userId), isRemoved: false },
         {$set:{isRemoved: true}}
