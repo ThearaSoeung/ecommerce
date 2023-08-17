@@ -1,7 +1,8 @@
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
-const mongoConnect = require('./util/database').mongoConnect
+const mongoConnect = require('./util/database').mongoConnect;
+const User = require("./models/user").User
 
 const notFoundController = require("./controllers/not-found");
 //Registering routes
@@ -13,6 +14,17 @@ const app = express();
 //Using EJS as the view engine
 app.set("view engine", "ejs");
 app.set("views", "views");
+
+//Middleware
+app.use((req, res, next)=>{
+  User.getByPk("64db4def9de3ab5907e0c89f")
+  .then((result) => {
+      req.user = result;
+      next();
+  }).catch((err) => {
+    console.error(err);
+  });
+});
 
 //Middleware to parse the body of the request
 app.use(bodyParser.urlencoded({ extended: false }));

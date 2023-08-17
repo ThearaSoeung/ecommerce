@@ -1,5 +1,5 @@
 const { Product } = require("../models/Product");
-
+const { ProductDTO } = require("../dto/product")
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/add_product", {
@@ -12,18 +12,22 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = async (req, res, next) => {
 
-  const title = req.body.product_name;
-  const price = req.body.product_price;
-  const description = req.body.product_description;
-  const imageUrl = req.body.product_image_url;
-  
-   Product.add(title, price, description, imageUrl)
+  const productDto = new ProductDTO(
+    req.body.product_name,
+    req.body.product_price,
+    req.body.product_description,
+    req.body.product_image_url, 
+    req.user._id.toString(),
+    false
+  );
+    
+   Product.insert(productDto)
   
     res.redirect("/admin");
 }
 
 exports.getAdminProducts = async (req, res, next) => {
-  await Product.fetchAll()
+  await Product.getAll()
   .then(temp=>{
     res.render("admin/product-admin", {
       pageTitle: "Product",
@@ -35,19 +39,6 @@ exports.getAdminProducts = async (req, res, next) => {
   .catch(()=>{
     console.log("Error");
   })
-
-    // .then((result) => {
-    //   const productsData = result.map((product) => product.dataValues);
-    //   res.render("admin/product-admin", {
-    //     pageTitle: "Product",
-    //     formsCSS: true,
-    //     productCSS: true,
-    //     products: productsData,
-    //   });
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // });
 };
 
 exports.deleteProductById = (req, res) => {
@@ -61,9 +52,8 @@ exports.deleteProductById = (req, res) => {
 };
 
 exports.getEditedProductById = (req, res) => {
-  Product.fetchOne(req.params.id)
+  Product.getByPk(req.params.id)
     .then((product) => {
-      console.log(product);
       res.render("admin/edit_product", {
         pageTitle: "Admin edit",
         path: "/",
@@ -79,13 +69,13 @@ exports.getEditedProductById = (req, res) => {
 };
 
 exports.postEditedProductById = async (req, res) => {
-    value = {
-      title: req.body.product_name,
-      price: req.body.product_price,
-      description: req.body.product_description,
-      imageUrl: req.body.product_image_url,
-    };
-    Product.updateProductByID(req.params.id, value)
+    const updatedField = new ProductDTO(
+      req.body.product_name,
+      req.body.product_price,
+      req.body.product_description,
+      req.body.product_image_url, 
+    );
+    Product.updateProductByPk(updatedField, req.params.id)
     .then(result=>{
       res.redirect("/admin");
     })

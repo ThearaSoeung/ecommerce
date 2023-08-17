@@ -1,10 +1,3 @@
-<!-- <!DOCTYPE html>
-<html>
-<head>
-  <title>Product Page</title>
-  <link rel="stylesheet" href="css/product.css">
-</head> -->
-
 <%- include('../includes/header.ejs') %> <%-
 include('../includes/navigation.ejs') %>
 <link rel="stylesheet" href="/css/product.css" />
@@ -13,21 +6,32 @@ include('../includes/navigation.ejs') %>
 <body>
   <h1>Product Page</h1>
 
-  <!-- product.ejs -->
-  <% for (let i = 0; i < products.length; i++) { %>
-  <div class="product">
-    <img src="<%= products[i].imageUrl %>" alt="Product Image" />
-    <div class="product-info">
-      <h1 class="product-title"><%= products[i].title %></h1>
-      <p class="product-description"><%=products[i].description%></p>
-      <p class="product-price"><%=products[i].price%> $</p>
-      <form action="/admin/delete/<%=products[i]._id.toString()%>" method="delete">
-        <button class="primary-button" name="buy-now">Delete</button>
-      </form>
-      <form action="/admin/edit/<%= products[i]._id.toString()%>" method="put">
-        <button class="primary-button" name="">Edit</button>
-      </form>
-    </div>
-  </div>
-  <% } %> <%- include('../includes/footer.ejs') %>
+  <% if (products.length === 0) { %>
+    <p>No products available.</p>
+  <% } else { %>
+    <% const availableProducts = products.filter(product => !product.isRemoved); %>
+    <% if (availableProducts.length === 0) { %>
+      <p>No products available.</p>
+    <% } else { %>
+      <% availableProducts.forEach(product => { %>
+        <div class="product">
+          <img src="<%= product.imageUrl %>" alt="Product Image" />
+          <div class="product-info">
+            <h1 class="product-title"><%= product.name %></h1>
+            <p class="product-description"><%= product.description %></p>
+            <p class="product-price"><%= product.price %> $</p>
+            <form action="/admin/delete/<%= product._id.toString() %>" method="delete">
+              <button class="primary-button" name="buy-now">Delete</button>
+            </form>
+            <form action="/admin/edit/<%= product._id.toString() %>" method="put">
+              <button class="primary-button" name="">Edit</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  <% } %>
+
+  <%- include('../includes/footer.ejs') %>
 </body>
+</html>

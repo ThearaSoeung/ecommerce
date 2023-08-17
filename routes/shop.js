@@ -17,9 +17,9 @@ router.post("/cart/update/:id", shopController.updateCartById);
 router.get("/shop/orders", shopController.getOrders);
 router.post("/shop/orders", shopController.postOrders);
 
-router.post("/shop/orders/remove", shopController.removeAllOrdersFromUser);
-
-
+router.post("/shop/orders/removed", shopController.removedAllOrdersFromUser);
+router.post("/shop/orders/completed", shopController.completedAllOrdersFromUser);
+//router.post('/shop/orders/completed', shopController.completedllOrdersFromUser);
 
 
 module.exports = router;

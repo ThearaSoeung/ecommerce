@@ -1,4 +1,4 @@
-<%- include('../includes/header.ejs') %> 
+<%- include('../includes/header.ejs') %>
 <%- include('../includes/navigation.ejs') %>
 <link rel="stylesheet" href="/css/product.css" />
 <link rel="stylesheet" href="/css/main.css" />
@@ -6,37 +6,37 @@
 <h1>Orders</h1>
 
 <div class="product">
-  <% if (orderItemList.length === 0) { %>
-    <h3>You don't have any order.</h3>
+  <% if (carts.length === 0) { %>
+    <h3>You don't have any orders.</h3>
   <% } else { %>
     <ul>
-        <% let totalPrice = 0; %>
-        <% orderItemList.forEach(cartItem => {
-          const product = formattedProduct.find(product => product.id === cartItem.productId);
-          const itemTotalPrice = product.price * cartItem.quantity;
+      <% let totalPrice = 0; %>
+      <%  carts.forEach(cartItem => {
+          const productItem = products.find(p => p._id.equals(cartItem.productId));
+          const itemTotalPrice = parseInt(productItem.price) * cartItem.qty;
           totalPrice += itemTotalPrice;
-        %>
-          <div class="cart-item">
-            <div class="cart-item-details">
-              <img src="<%= product.imageUrl %>" alt="Product Image" />
-              <div class="product-info">
-                <h1 class="product-title"><%= product.title %></h1>
-                <h4><%=cartItem.quantity%> x <%= product.price %> $</h4>
-                
-                <p>Total Price: <%= itemTotalPrice %> USD</p>
-              </div>
-              <div class="cart-item-actions">
-              </div>
+      %>
+        <div class="cart-item">
+          <div class="cart-item-details">
+            <img src="<%= productItem.imageUrl %>" alt="Product Image" />
+            <div class="product-info">
+              <h1 class="product-title"><%= productItem.name %></h1>
+              <h4><%= cartItem.qty %> x <%= productItem.price %> $</h4>
+              <p>Total Price: <%= itemTotalPrice %> USD</p>
+            </div>
+            <div class="cart-item-actions">
             </div>
           </div>
-        <% }); %>
-        <h2 class="total-cart-price">Total Price for all Items: <%= totalPrice %> USD</h2>
-        <button class="primary-button">Order</button>
-        <form action="/shop/orders/remove" method="POST">
-            <button class="primary-button">Remove all orders</button>
-        </form>
-      </ul>
-            
+        </div>
+      <% }); %>
+      <h2 class="total-cart-price">Total Price for all Items: <%= totalPrice %> USD</h2>
+      <form action="/shop/orders/completed" method="POST">
+        <button class="primary-button" name="order">Order</button>
+      </form>
+      <form action="/shop/orders/removed" method="POST">
+        <button class="primary-button" name="remove">Remove all orders</button>
+      </form>
+    </ul>
   <% } %>
 </div>
 
