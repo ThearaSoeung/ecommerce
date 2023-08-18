@@ -1,5 +1,5 @@
-const { Product } = require("../models/Product");
-const { ProductDTO } = require("../dto/product")
+const { ProductService } = require("../models/Product");
+const { ProductDTO } = require("../dtos/product")
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/add_product", {
@@ -11,23 +11,24 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = async (req, res, next) => {
-
-  const productDto = new ProductDTO(
-    req.body.product_name,
-    req.body.product_price,
-    req.body.product_description,
-    req.body.product_image_url, 
-    req.user._id.toString(),
-    false
-  );
-    
-   Product.insert(productDto)
-  
+  try {
+    const productDto = new ProductDTO(
+      req.body.product_name,
+      req.body.product_price,
+      req.body.product_description,
+      req.body.product_image_url, 
+      req.user._id.toString(),
+      false
+    );
+    await ProductService.insert(productDto)
     res.redirect("/admin");
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 exports.getAdminProducts = async (req, res, next) => {
-  await Product.getAll()
+  await ProductService.getAll()
   .then(temp=>{
     res.render("admin/product-admin", {
       pageTitle: "Product",
@@ -42,7 +43,7 @@ exports.getAdminProducts = async (req, res, next) => {
 };
 
 exports.deleteProductById = (req, res) => {
-  Product.deleteProductById(req.params.id)
+  ProductService.deleteProductById(req.params.id)
   .then(() => {
     res.redirect("/admin");
   })
@@ -52,7 +53,7 @@ exports.deleteProductById = (req, res) => {
 };
 
 exports.getEditedProductById = (req, res) => {
-  Product.getByPk(req.params.id)
+  ProductService.getByPk(req.params.id)
     .then((product) => {
       res.render("admin/edit_product", {
         pageTitle: "Admin edit",
@@ -75,7 +76,7 @@ exports.postEditedProductById = async (req, res) => {
       req.body.product_description,
       req.body.product_image_url, 
     );
-    Product.updateProductByPk(updatedField, req.params.id)
+    ProductService.updateProductByPk(updatedField, req.params.id)
     .then(result=>{
       res.redirect("/admin");
     })

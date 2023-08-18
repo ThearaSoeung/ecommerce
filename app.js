@@ -2,7 +2,11 @@ const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
 const mongoConnect = require('./util/database').mongoConnect;
-const User = require("./models/user").User
+const User = require("./models/user")
+const mongooes = require("mongoose"); 
+const { ObjectId } = require('mongoose').Types;
+
+
 
 const notFoundController = require("./controllers/not-found");
 //Registering routes
@@ -17,7 +21,8 @@ app.set("views", "views");
 
 //Middleware
 app.use((req, res, next)=>{
-  User.getByPk("64db4def9de3ab5907e0c89f")
+  const userId = new ObjectId('64deedff63a366a7bbb75b54')
+  User.getByPk(userId)
   .then((result) => {
       req.user = result;
       next();
@@ -36,7 +41,13 @@ app.use(shopRoute);
 app.use(adminRoute);
 app.use(notFoundController.getNotFoundPage);
 
-mongoConnect(() => {
-  app.listen(3000);
-}); 
+// mongoConnect(() => {
+//   app.listen(3000);
+// }); 
 
+mongooes.connect('mongodb+srv://thearasoeung:Theara011802399@cluster0.6wyv2kg.mongodb.net/?retryWrites=true&w=majority')
+.then((result) => {
+  app.listen('3000');
+}).catch((err) => {
+  console.error(err);
+});

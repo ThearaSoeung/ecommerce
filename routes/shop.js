@@ -5,7 +5,7 @@ const shopController = require("../controllers/shop");
 router.get("", shopController.getLandingPage);
 router.get("/shop/products", shopController.getProduct);
 router.get("/shop/products/:productId", shopController.getProdectDetailById);
-router.post("/shop/products", shopController.postProduct);
+//router.post("/shop/products", shopController.postProduct);
 
 router.post("/cart/:id", shopController.addCartById);
 router.get("/cart", shopController.getCart);
@@ -19,7 +19,5 @@ router.post("/shop/orders", shopController.postOrders);
 
 router.post("/shop/orders/removed", shopController.removedAllOrdersFromUser);
 router.post("/shop/orders/completed", shopController.completedAllOrdersFromUser);
-//router.post('/shop/orders/completed', shopController.completedllOrdersFromUser);
-
 
 module.exports = router;
