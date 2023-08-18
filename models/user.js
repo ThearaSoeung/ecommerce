@@ -1,53 +1,54 @@
-const { ObjectId } = require('mongodb');
-const getDb = require('../util/database').getDb;
+const { User } = require('../Schema/user'); // Update the path accordingly
 
-class User{
-  constructor(name, email){
-    this._id = new ObjectId();
-    this.name = name;
-    this.email = email; 
+class UserService {
+  static async insert(name, email) {
+    try {
+      const user = await User.create({ name, email });
+      return user;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  static save(){
-    const db = getDb();
-    return db.collection('users').insertOne(this)
-    .then((result) => {
-      return result;
-    }).catch((err) => {
-      console.error(err);
-    });
-  }
-  static getByPk(pk){
-    const db = getDb();
-    return db.collection('users').findOne({_id: new ObjectId(pk)})
-    .then(res=>{
-      return res;
-    })
-    .catch(err=>{
-      console.error(err);
-    })
+  static async getByPk(pk) {
+    try {
+      const user = await User.findById(pk);
+      return user;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  static getAll(){
-    const db = getDb();
-    return db.collection('users').find().toArray()
-    .then((products) => {
-      return products;
-    } 
-    ).catch((err) => {
-      console.error(err);
-    })
+  static async getAll() {
+    try {
+      const users = await User.find();
+      return users;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  static insert(name, email){
-    const user = new User(name, email);
-    const db = getDb();
-    return db.collection('users').updateOne(
-      {_id: new ObjectId(this._id)},
-      {$set: {user: user}}
-    )
+  static async updateById(id, name, email) {
+    try {
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        { name, email },
+        { new: true }
+      );
+      return updatedUser;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
+  static async deleteById(id) {
+    try {
+      const deletedUser = await User.findByIdAndDelete(id);
+      return deletedUser;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
-module.exports = { User };
 
+module.exports = UserService;

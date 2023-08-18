@@ -1,130 +1,134 @@
-const { ObjectId } = require('mongodb');
+const { ObjectId } = require('mongoose').Types;
+const { Order } = require('../Schema/order'); // Import your Order model
+const ProductService = require('./Product').ProductService;
 
-const getDb = require('../util/database').getDb;
-
-class Order {
-  constructor( cart, user, isRemoved = false, isCompleted = false){
-    this._id = new ObjectId();
-    this.cart = cart;
-    this.user = user;
-    this.isRemoved = isRemoved;
-    this.isCompleted = isCompleted;     
-  }
-
-  save(){
-    const db = getDb();
-    return db.collection('orders').insertOne(this)
-    .then((result) => {
-      return result;
-    }).catch((err) => {
-      console.error(err);
-    });
-  }
-
-  static async insert(cart, user){
-    const order = new Order(cart, user);
-    return await order.save();
+class OrderService {
+  static async insert(cart, userId) {
+    try {
+      const order = await Order.create({
+        cart: cart,
+        user: userId,
+      });
+      return order;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   static async appendCart(orderId, cart) {
     try {
-      const db = getDb();
-      return await db.collection('orders').updateOne(
-        { _id: orderId },
-        { $push: { cart: cart } }
+      const updatedOrder = await Order.findByIdAndUpdate(
+        orderId,
+        { $push: { cart: cart } },
+        { new: true } // Return the updated document
       );
+      return updatedOrder;
     } catch (error) {
       console.error(error);
     }
   }
 
-  static async updateQtyInCart(orderId, cartId, qty) {
+  static async updateQtyInCart(orderId, cartItemId, qty) {
     try {
-      const db = getDb();
-      return await db.collection('orders').updateOne(
+      const updatedOrder = await Order.findOneAndUpdate(
         {
-          _id: new ObjectId(orderId),
-          'cart._id': cartId
+          _id: orderId,
+          'cart._id': cartItemId
         },
         {
           $inc: { 'cart.$.qty': qty } 
-        }
+        },
+        { new: true } // Return the updated document
       );
+      return updatedOrder;
     } catch (error) {
       console.error(error);
     }
   }
-  
-  static async getAll(){
-    const db = getDb();
-    return await db.collection('orders').find().toArray()
-    .then((orders) => {
+
+  static async getAll() {
+    try {
+      const orders = await Order.find();
       return orders;
-    }).catch((err) => {
-      console.error(err);
-    });
-  }
-  
-  static async getByPk(pk){
-    const db = getDb();
-    return await db.collection('orders').findOne({_id: new ObjectId(pk)})
-    .then((result)=>{
-      return result;
-    })
-    .catch((error)=>{
-      console.error(error);
-    })
-  }
-
-  static async updateOrderByPk(id, isRemoved, isCompleted){
-    const db = getDb();
-    return await db.collection('orders').updateOne(
-      {_id: new ObjectId(id)},
-      {$set: { isRemoved: isRemoved, isCompleted: isCompleted}}
-    )
-    .then(result=>{
-      return result;
-    })
-    .catch(error=>{
-      console.error(error);
-    })
-  }
-
-  static async getOrderByUserId(userId){
-    try {
-      const db = getDb();
-      return await db.collection('orders').find(
-        {userId: userId}
-      ).toArray();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
-  static async completeAllOrdersFromUser(userId){
+  static async getByPk(pk) {
     try {
-      const db = getDb();
-      return await db.collection('orders').updateOne(
-        {'user._id': new ObjectId(userId), isCompleted: false },
-        {$set:{isCompleted: true}}
+      const order = await Order.findById(pk);
+      return order;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  static async updateOrderByPk(id, isRemoved, isCompleted) {
+    try {
+      const updatedOrder = await Order.findByIdAndUpdate(
+        id,
+        { $set: { isRemoved: isRemoved, isCompleted: isCompleted } },
+        { new: true } // Return the updated document
       );
+      return updatedOrder;
     } catch (error) {
       console.error(error);
     }
   }
 
-  static async removeAllOrdersFromUser(userId){
+  static async getOrderByUserId(userId) {
     try {
-      const db = getDb();
-      return await db.collection('orders').updateOne(
-        {'user._id': new ObjectId(userId), isRemoved: false },
-        {$set:{isRemoved: true}}
-      );
+      const orders = await Order.find({ user: userId });
+      return orders;
     } catch (error) {
       console.error(error);
     }
   }
 
+  static async completeAllOrdersFromUser(userId) {
+    try {
+      const updatedOrders = await Order.updateMany(
+        { user: userId, isCompleted: false },
+        { $set: { isCompleted: true } },
+        { new: true } // Return the updated documents
+      );
+      return updatedOrders;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  static async removeAllOrdersFromUser(userId) {
+    try {
+      const updatedOrders = await Order.updateMany(
+        { user: userId, isRemoved: false },
+        { $set: { isRemoved: true } },
+        { new: true } // Return the updated documents
+      );
+      return updatedOrders;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  static async markCartAsRemoved(orderId, productId) {
+    try {
+      const updatedOrder = await Order.findOneAndUpdate(
+        {
+          _id: orderId,
+          'cart': ObjectId(productId)
+        },
+        {
+          $set: { 'cart.$.isRemoved': true } 
+        },
+        { new: true } // Return the updated document
+      );
+      return updatedOrder;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
 
-module.exports = { Order };
+module.exports = OrderService;
