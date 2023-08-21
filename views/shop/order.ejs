@@ -31,9 +31,11 @@
       <% }); %>
       <h2 class="total-cart-price">Total Price for all Items: <%= totalPrice %> USD</h2>
       <form action="/shop/orders/completed" method="POST">
+        <input type="hidden" name="_csrf" value="<%=csrfToken%>">
         <button class="primary-button" name="order">Order</button>
       </form>
       <form action="/shop/orders/removed" method="POST">
+        <input type="hidden" name="_csrf" value="<%=csrfToken%>">
         <button class="primary-button" name="remove">Remove all orders</button>
       </form>
     </ul>

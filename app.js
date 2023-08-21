@@ -6,13 +6,22 @@ const mongooes = require("mongoose");
 const session = require('express-session');
 const MongoDBSession = require('connect-mongodb-session')(session);
 const MongoDbURI = "mongodb+srv://thearasoeung:Theara011802399@cluster0.6wyv2kg.mongodb.net/?retryWrites=true&w=majority";
-
+const csrf = require('csurf');
 const notFoundController = require("./controllers/not-found");
 //Registering routes
 const adminRoute = require("./routes/admin");
 const shopRoute = require("./routes/shop");
-
+const csrfProtection = csrf();
 const app = express();
+
+const store = new MongoDBSession({
+  uri: MongoDbURI,
+  collection: 'sessions'
+})
+//Middleware to parse the body of the request
+app.use(bodyParser.urlencoded({ extended: false }));
+//Middleware to serve static files from the public folder
+app.use(express.static(path.join(__dirname, "public")));
 
 //Using EJS as the view engine
 app.set("view engine", "ejs");
@@ -25,11 +34,6 @@ mongooes.connect(MongoDbURI)
   console.error(err);
 });
 
-const store = new MongoDBSession({
-  uri: MongoDbURI,
-  collection: 'sessions'
-})
-
 app.use(session({
   secret: 'mySecret',
   resave: false, 
@@ -37,7 +41,8 @@ app.use(session({
   store: store, 
 }))
 
-//Middleware
+app.use(csrfProtection);
+
 app.use((req, res, next)=>{
   if(!req.session.user){
     return next();
@@ -51,10 +56,13 @@ app.use((req, res, next)=>{
   });
 });
 
-//Middleware to parse the body of the request
-app.use(bodyParser.urlencoded({ extended: false }));
-//Middleware to serve static files from the public folder
-app.use(express.static(path.join(__dirname, "public")));
+app.use((req,res,next)=>{
+  res.locals.isAuthenticated = req.session.loginStatus;
+  res.locals.csrfToken = req.csrfToken();
+  next()
+})
+
+
 //Using the routes
 app.use(shopRoute);
 app.use(adminRoute);

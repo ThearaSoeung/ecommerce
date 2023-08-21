@@ -21,9 +21,11 @@
             <p class="product-description"><%= product.description %></p>
             <p class="product-price"><%= product.price %> $</p>
             <form action="/admin/delete/<%= product._id.toString() %>" method="delete">
+              <input type="hidden" name="_csrf" value="<%=csrfToken%>">
               <button class="primary-button" name="buy-now">Delete</button>
             </form>
             <form action="/admin/edit/<%= product._id.toString() %>" method="put">
+              <input type="hidden" name="_csrf" value="<%=csrfToken%>">
               <button class="primary-button" name="">Edit</button>
             </form>
           </div>

@@ -10,7 +10,6 @@ exports.getAddProduct = (req, res, next) => {
     path: "/admin/add_product",
     formsCSS: true,
     productCSS: true,
-    isAuthenticated: req.session.loginStatus
   });
 };
 
@@ -39,7 +38,6 @@ exports.getAdminProducts = async (req, res, next) => {
       formsCSS: true,
       productCSS: true,
       products: temp,
-      isAuthenticated: req.session.loginStatus 
     });
   })
   .catch(()=>{
@@ -67,7 +65,6 @@ exports.getEditedProductById = (req, res) => {
         productCSS: true,
         activeAddProduct: true,
         product: product,
-        isAuthenticated: req.session.loginStatus
       });
     })
     .catch((err) => {
@@ -92,9 +89,7 @@ exports.postEditedProductById = async (req, res) => {
 };
 
 exports.getAdminLogin = async (req, res) => {
-  res.render("admin/login",{
-    isAuthenticated: req.session.loginStatus
-  });
+  res.render("admin/login");
 };
 
 exports.postAdminLogin = async (req, res) => {
@@ -146,7 +141,6 @@ exports.getAdminSignup = async (req, res) => {
     formsCSS: true,
     productCSS: true,
     activeAddProduct: true,
-    isAuthenticated: req.session.loginStatus
   });
 };
 

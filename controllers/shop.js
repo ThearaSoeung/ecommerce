@@ -10,7 +10,7 @@ exports.getLandingPage = (req, res, next) => {
     formsCSS: true,
     productCSS: true,
     activeAddProduct: true,
-    isAuthenticated: req.session.loginStatus
+    
   });
 };
 
@@ -22,7 +22,6 @@ exports.getProduct = async (req, res, next) => {
       formsCSS: true,
       productCSS: true,
       products: products,
-      isAuthenticated: req.session.loginStatus
     });
   } catch (error) {
     console.log("error:", error);
@@ -49,7 +48,6 @@ exports.getCart = async (req, res, next) => {
     activeAddProduct: true,
     products: products,
     carts: carts,
-    isAuthenticated: req.session.loginStatus
   });
 };
 
@@ -85,7 +83,6 @@ exports.getOrders = async (req, res, next) => {
       products: myProduct,
       carts: orders[0] === undefined ? [] : orders[0].cart,
       user: user, 
-      isAuthenticated: req.session.loginStatus
       
     });
   } catch (error) {
@@ -160,7 +157,6 @@ exports.getProdectDetailById = (req, res, next) => {
         productCSS: true,
         activeAddProduct: true,
         product: product,
-        isAuthenticated: req.session.loginStatus
       });
     })
     .catch(() => {

@@ -3,8 +3,6 @@ const router = express.Router();
 const shopController = require("../controllers/shop");
 const isAuth = require('../middleware/is_auth');
 
-
-
 router.get("", shopController.getLandingPage);
 router.get("/shop/products", shopController.getProduct);
 router.get("/shop/products/:productId", shopController.getProdectDetailById);

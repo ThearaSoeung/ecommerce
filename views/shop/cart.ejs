@@ -26,6 +26,7 @@
                 <input type="number" value="<%= cartItem.qty %>" name="quantity">
               </form>
               <form action="/cart/remove/<%= cartItem._id %>" method="POST">
+                <input type="hidden" name="_csrf" value="<%=csrfToken%>">
                 <button>Remove</button>
               </form>
               <p>Total Price: <%= itemTotalPrice %> USD</p>
@@ -37,6 +38,7 @@
       <% }); %>
       <h2 class="total-cart-price">Total Price for all Items: <%= totalPrice %> USD</h2>
       <form action="/shop/orders" method="POST">
+        <input type="hidden" name="_csrf" value="<%=csrfToken%>">
         <button class="primary-button">Order</button>
       </form>
     </ul>
