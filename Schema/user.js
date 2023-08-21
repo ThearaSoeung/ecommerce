@@ -2,13 +2,6 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 2,
-    maxlength: 100,
-  },
   email: {
     type: String,
     required: true,
@@ -22,6 +15,11 @@ const userSchema = new Schema({
       },
       message: props => `${props.value} is not a valid email address!`,
     },
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 6, // Adjust this according to your requirements
   },
 }, {
   timestamps: true,

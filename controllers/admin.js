@@ -21,7 +21,7 @@ exports.postAddProduct = async (req, res, next) => {
       req.body.product_price,
       req.body.product_description,
       req.body.product_image_url, 
-      req.user._id.toString(),
+      req.session.user._id.toString(),
       false
     );
     await ProductService.insert(productDto)
@@ -98,19 +98,67 @@ exports.getAdminLogin = async (req, res) => {
 };
 
 exports.postAdminLogin = async (req, res) => {
-  const userId = new ObjectId('64deedff63a366a7bbb75b54');
-  const user = await User.getByPk(userId);
-  req.session.username = "Theara Soeung"; 
-  req.session.password = "password123@theara";
-  req.session.loginStatus = true;
-  req.session.user = user;   
-  req.session.save((result)=>{
-    res.redirect("/");
-  })
+  console.log(req.body);
+  const email = req.body.email;
+  const password = req.body.password;
+
+  await User.getByEmailAndPassword(email, password)
+  .then((result) => {
+    if(result === 1){
+      console.log("Incorrect email");
+      res.redirect('/admin/login');
+    }else if(result === 2){
+      console.log("Incorrect password");
+      res.redirect('/admin/login');
+    }else{
+      console.log("Success")
+      req.session.loginStatus = true;
+      req.session.user = result;   
+      req.session.save((result)=>{
+        res.redirect("/");
+      })
+    }
+  }).catch((err) => {
+    console.error(err);
+  });
+
+
+  // const userId = new ObjectId('64deedff63a366a7bbb75b54');
+  // const user = await User.getByPk(userId);
+  // req.session.username = "Theara Soeung"; 
+  // req.session.password = "password123@theara";
+  // req.session.loginStatus = true;
+  // req.session.user = user;   
+  // req.session.save((result)=>{
+  //   res.redirect("/");
+  // })
 };
 
 exports.getAdminLogout = async (req, res) => {
   req.session.destroy(()=>{
     res.redirect("/");
+  });
+};
+
+exports.getAdminSignup = async (req, res) => {
+  res.render("admin/signup", {
+    path: "/",
+    formsCSS: true,
+    productCSS: true,
+    activeAddProduct: true,
+    isAuthenticated: req.session.loginStatus
+  });
+};
+
+exports.postAdminSignup = async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password[0];
+  const confirmedPassword = req.body.password[1];
+  await User.insert(email,password)
+  .then((result) => {
+    console.log(result);
+    res.redirect('/admin/login');
+  }).catch((err) => {
+    console.error(err);
   });
 };

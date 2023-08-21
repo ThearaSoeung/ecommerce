@@ -31,7 +31,7 @@ exports.getProduct = async (req, res, next) => {
 
 
 exports.getCart = async (req, res, next) => {
-  const userId = req.user._id.toString();
+  const userId = req.session.user._id.toString();
 
   const carts = (await Cart.findCartByUserId(userId)).filter(
     (item) => item.isRemoved === false
@@ -60,7 +60,7 @@ exports.getOrders = async (req, res, next) => {
     let orders = [];
     orders = (await Order.getAll()).filter(
       item => item.isCompleted === false 
-      && item.user._id.toString() === req.user._id.toString()
+      && item.user._id.toString() === req.session.user._id.toString()
       && item.isRemoved === false
     )
     const product = (await ProductService.getAll()).filter(

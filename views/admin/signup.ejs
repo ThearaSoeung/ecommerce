@@ -7,15 +7,18 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>Login</h2>
-        <form action="/admin/login" method="post">
+        <h2>Sign up</h2>
+        <form action="/admin/signup" method="post">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
             
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-            
-            <button type="submit" class="primary-button" >Login</button>
+
+            <label for="password">Confirm Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit" class="primary-button" >Create</button>
         </form>
     </div>
 </body>

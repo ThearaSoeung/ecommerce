@@ -47,6 +47,14 @@
   border-radius: 3px;
 }
 
+.login-container input[type="email"],
+.login-container input[type="email"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
 .login-container button {
   width: 100%;
   padding: 10px;
