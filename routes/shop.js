@@ -1,23 +1,26 @@
 const express = require("express");
 const router = express.Router();
 const shopController = require("../controllers/shop");
+const isAuth = require('../middleware/is_auth');
+
+
 
 router.get("", shopController.getLandingPage);
 router.get("/shop/products", shopController.getProduct);
 router.get("/shop/products/:productId", shopController.getProdectDetailById);
 //router.post("/shop/products", shopController.postProduct);
 
-router.post("/cart/:id", shopController.addCartById);
-router.get("/cart", shopController.getCart);
+router.post("/cart/:id", isAuth, shopController.addCartById);
+router.get("/cart", isAuth, shopController.getCart);
 
-router.post("/cart/remove/:id", shopController.removeCartById);
-router.post("/cart/update/:id", shopController.updateCartById);
+router.post("/cart/remove/:id", isAuth, shopController.removeCartById);
+router.post("/cart/update/:id", isAuth, shopController.updateCartById);
 
 
-router.get("/shop/orders", shopController.getOrders);
-router.post("/shop/orders", shopController.postOrders);
+router.get("/shop/orders", isAuth, shopController.getOrders);
+router.post("/shop/orders", isAuth, shopController.postOrders);
 
-router.post("/shop/orders/removed", shopController.removedAllOrdersFromUser);
-router.post("/shop/orders/completed", shopController.completedAllOrdersFromUser);
+router.post("/shop/orders/removed", isAuth, shopController.removedAllOrdersFromUser);
+router.post("/shop/orders/completed", isAuth, shopController.completedAllOrdersFromUser);
 
 module.exports = router;
