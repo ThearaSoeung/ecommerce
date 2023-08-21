@@ -1,5 +1,6 @@
-<%- include('../includes/header.ejs') %> <%-
-include('../includes/navigation.ejs') %>
+<%- include('../includes/header.ejs') %>
+<%- include('../includes/navigation', {isLogin: isAuthenticated}); %>
+
 <link rel="stylesheet" href="/css/product.css" />
 <link rel="stylesheet" href="/css/main.css" />
 
@@ -17,8 +18,11 @@ include('../includes/navigation.ejs') %>
 <p class="product-price"><%= product.price %>$</p>
 <p><%= product.description%></p>
 
+<% if (isAuthenticated) { %>
 <form action="/cart/<%= product._id.toString() %>" method="post">
   <button class="primary-button">Add to cart</button>
 </form>
+<% } %>
+
 
 <%- include('../includes/footer.ejs') %>

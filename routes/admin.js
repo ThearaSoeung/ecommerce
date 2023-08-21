@@ -9,4 +9,8 @@ router.post("/admin/edit/:id", adminController.postEditedProductById);
 router.get("/admin/delete/:id", adminController.deleteProductById);
 router.get("/admin", adminController.getAdminProducts);
 
+router.get("/admin/login", adminController.getAdminLogin); 
+router.post("/admin/login", adminController.postAdminLogin); 
+router.get("/admin/logout", adminController.getAdminLogout); 
+
 module.exports = router;

@@ -1,6 +1,7 @@
 const { ProductService } = require("../models/Product");
 const Cart = require("../models/cart");
 const Order = require("../models/order");
+const session = require('express-session');
 
 exports.getLandingPage = (req, res, next) => {
   res.render("shop/index", {
@@ -9,6 +10,7 @@ exports.getLandingPage = (req, res, next) => {
     formsCSS: true,
     productCSS: true,
     activeAddProduct: true,
+    isAuthenticated: req.session.loginStatus
   });
 };
 
@@ -20,6 +22,7 @@ exports.getProduct = async (req, res, next) => {
       formsCSS: true,
       productCSS: true,
       products: products,
+      isAuthenticated: req.session.loginStatus
     });
   } catch (error) {
     console.log("error:", error);
@@ -46,6 +49,7 @@ exports.getCart = async (req, res, next) => {
     activeAddProduct: true,
     products: products,
     carts: carts,
+    isAuthenticated: req.session.loginStatus
   });
 };
 
@@ -80,7 +84,9 @@ exports.getOrders = async (req, res, next) => {
       activeAddProduct: true,
       products: myProduct,
       carts: orders[0] === undefined ? [] : orders[0].cart,
-      user: user 
+      user: user, 
+      isAuthenticated: req.session.loginStatus
+      
     });
   } catch (error) {
     console.error(error);
@@ -154,6 +160,7 @@ exports.getProdectDetailById = (req, res, next) => {
         productCSS: true,
         activeAddProduct: true,
         product: product,
+        isAuthenticated: req.session.loginStatus
       });
     })
     .catch(() => {

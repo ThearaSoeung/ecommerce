@@ -1,0 +1,23 @@
+<%- include('../includes/header.ejs') %>
+<%- include('../includes/navigation', {isLogin: isAuthenticated}); %>
+<link rel="stylesheet" href="/css/forms.css">
+<link rel="stylesheet" href="/css/product.css">
+<link rel="stylesheet" href="/css/main.css"> 
+
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form action="/admin/login" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            
+            <button type="submit" class="primary-button" >Login</button>
+        </form>
+    </div>
+</body>
+</html>
+<%- include('../includes/footer.ejs') %>

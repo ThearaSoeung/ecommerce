@@ -1,5 +1,8 @@
 const { ProductService } = require("../models/Product");
-const { ProductDTO } = require("../dtos/product")
+const { ProductDTO } = require("../dtos/product");
+const User = require("../models/user")
+const { ObjectId } = require('mongoose').Types;
+
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/add_product", {
@@ -7,6 +10,7 @@ exports.getAddProduct = (req, res, next) => {
     path: "/admin/add_product",
     formsCSS: true,
     productCSS: true,
+    isAuthenticated: req.session.loginStatus
   });
 };
 
@@ -35,6 +39,7 @@ exports.getAdminProducts = async (req, res, next) => {
       formsCSS: true,
       productCSS: true,
       products: temp,
+      isAuthenticated: req.session.loginStatus 
     });
   })
   .catch(()=>{
@@ -62,6 +67,7 @@ exports.getEditedProductById = (req, res) => {
         productCSS: true,
         activeAddProduct: true,
         product: product,
+        isAuthenticated: req.session.loginStatus
       });
     })
     .catch((err) => {
@@ -83,4 +89,28 @@ exports.postEditedProductById = async (req, res) => {
     .catch (error=>{
       console.error(error);
     })
+};
+
+exports.getAdminLogin = async (req, res) => {
+  res.render("admin/login",{
+    isAuthenticated: req.session.loginStatus
+  });
+};
+
+exports.postAdminLogin = async (req, res) => {
+  const userId = new ObjectId('64deedff63a366a7bbb75b54');
+  const user = await User.getByPk(userId);
+  req.session.username = "Theara Soeung"; 
+  req.session.password = "password123@theara";
+  req.session.loginStatus = true;
+  req.session.user = user;   
+  req.session.save((result)=>{
+    res.redirect("/");
+  })
+};
+
+exports.getAdminLogout = async (req, res) => {
+  req.session.destroy(()=>{
+    res.redirect("/");
+  });
 };

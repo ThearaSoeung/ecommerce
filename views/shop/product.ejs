@@ -1,5 +1,5 @@
-<%- include('../includes/header.ejs') %> <%-
-include('../includes/navigation.ejs') %>
+<%- include('../includes/header.ejs') %>
+<%- include('../includes/navigation', {isLogin: isAuthenticated}); %>
 <link rel="stylesheet" href="/css/product.css" />
 <link rel="stylesheet" href="/css/main.css" />
 
@@ -21,9 +21,12 @@ include('../includes/navigation.ejs') %>
           <form action="/shop/products/<%= product._id.toString() %>" method="get">
             <button class="primary-button" name="buy-now-btn">Details</button>
           </form>
+
+        <% if (isAuthenticated) { %>
           <form action="/cart/<%= product._id.toString() %>" method="post">
             <button class="primary-button" name="cart-btn">Add to Cart</button>
           </form>
+          <% } %>
         </div>
       </div>
     <% }) %>
