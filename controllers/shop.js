@@ -37,8 +37,8 @@ exports.getCart = async (req, res, next) => {
     (item) => item.isRemoved === false
   );
 
-  const products = (await ProductService.findProductByUserId(userId)).filter(
-    (item) => item.isRemoved === false
+  const products = (await ProductService.getAll()).filter(
+    (item) => item.isRemoved === false    
   );
 
   res.render("shop/cart", {
@@ -63,7 +63,7 @@ exports.getOrders = async (req, res, next) => {
       && item.isRemoved === false
     )
     const product = (await ProductService.getAll()).filter(
-      item => item.isRemoved === false && item.addedBy.toString() === user._id.toString()
+      item => item.isRemoved === false
     )
     orders.forEach(orderItem => {
       product.forEach(productItem => {
@@ -175,7 +175,7 @@ exports.addCartById = async (req, res, next) => {
       Cart.insert(userId, productId);
     } else {
       Cart.updateQtyByPk(isCardFind[0], 1);
-    }
+    } 
     res.redirect("/cart");
   } catch (error) {
     console.log(error);

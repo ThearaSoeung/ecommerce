@@ -30,18 +30,19 @@ exports.postAddProduct = async (req, res, next) => {
 }
 
 exports.getAdminProducts = async (req, res, next) => {
-  await ProductService.getAll()
-  .then(temp=>{
+  try{
+    console.log()
+    const products = (await ProductService.getAll()).filter( item => item.addedBy.toString() === req.session.user._id.toString())
     res.render("admin/product-admin", {
       pageTitle: "Product",
       formsCSS: true,
       productCSS: true,
-      products: temp,
-    });
-  })
-  .catch(()=>{
-    console.log("Error");
-  })
+      products: products,
+    })
+  }
+  catch(error){
+    console.error(error);
+  }
 };
 
 exports.deleteProductById = (req, res) => {
