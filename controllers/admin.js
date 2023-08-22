@@ -1,8 +1,7 @@
 const { ProductService } = require("../models/Product");
 const { ProductDTO } = require("../dtos/product");
-const User = require("../models/user")
-const { ObjectId } = require('mongoose').Types;
-
+const User = require("../models/user");
+const { error } = require("console");
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/add_product", {
@@ -83,55 +82,41 @@ exports.postEditedProductById = async (req, res) => {
     .then(result=>{
       res.redirect("/admin");
     })
-    .catch (error=>{
+    .catch (error=>{ 
       console.error(error);
     })
 };
 
 exports.getAdminLogin = async (req, res) => {
-  res.render("admin/login");
-};
+  res.render("admin/login",{
+    flash: req.flash() || {},
+    message: ''
+  });
+};  
 
 exports.postAdminLogin = async (req, res) => {
-  console.log(req.body);
   const email = req.body.email;
   const password = req.body.password;
 
-  await User.getByEmailAndPassword(email, password)
-  .then((result) => {
-    if(result === 1){
-      console.log("Incorrect email");
+  try {
+    const user = await User.getByEmailAndPassword(email, password);
+    req.session.loginStatus = true;
+    req.session.user = user;
+    await req.session.save();
+    req.flash('success', 'Login Successfully');
+    res.redirect('/');
+  } 
+  catch (error) {
+      req.flash('error', 'Email or Password is incorrect.');
       res.redirect('/admin/login');
-    }else if(result === 2){
-      console.log("Incorrect password");
-      res.redirect('/admin/login');
-    }else{
-      console.log("Success")
-      req.session.loginStatus = true;
-      req.session.user = result;   
-      req.session.save((result)=>{
-        res.redirect("/");
-      })
     }
-  }).catch((err) => {
-    console.error(err);
-  });
-
-
-  // const userId = new ObjectId('64deedff63a366a7bbb75b54');
-  // const user = await User.getByPk(userId);
-  // req.session.username = "Theara Soeung"; 
-  // req.session.password = "password123@theara";
-  // req.session.loginStatus = true;
-  // req.session.user = user;   
-  // req.session.save((result)=>{
-  //   res.redirect("/");
-  // })
 };
 
 exports.getAdminLogout = async (req, res) => {
-  req.session.destroy(()=>{
-    res.redirect("/");
+  await req.session.destroy();
+  res.render("shop/index", {
+    message: 'Logout Successfully!',
+    flash: {}
   });
 };
 
@@ -141,6 +126,7 @@ exports.getAdminSignup = async (req, res) => {
     formsCSS: true,
     productCSS: true,
     activeAddProduct: true,
+    message: ''
   });
 };
 
@@ -148,11 +134,15 @@ exports.postAdminSignup = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password[0];
   const confirmedPassword = req.body.password[1];
-  await User.insert(email,password)
-  .then((result) => {
-    console.log(result);
-    res.redirect('/admin/login');
-  }).catch((err) => {
-    console.error(err);
-  });
-};
+  try {
+    const user = await User.insert(email,password)
+    res.render('admin/login', {
+      flash: req.flash() || {},
+      message: "Account created successfully"
+    });   
+  } catch (error) {
+    res.render('admin/signup', {
+      message: "Email already exist!"
+    })
+  }
+};  

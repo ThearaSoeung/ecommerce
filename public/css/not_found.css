@@ -7,3 +7,29 @@
     font-size: 24px;
     font-weight: bold;
   }
+
+  .flash-messages {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  
+  .flash-message {
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    top: -40px; /* Adjust this value to control the distance from the h2 element */
+    left: 0;
+  }
+  
+  .flash-message.success {
+    background-color: #5cb85c; /* Green for success */
+    color: white;
+  }
+  
+  .flash-message.error {
+    background-color: #d9534f; /* Red for error */
+    color: white;
+  }

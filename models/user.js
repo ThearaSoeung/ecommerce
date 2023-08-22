@@ -1,14 +1,20 @@
 const { User } = require('../Schema/user'); // Update the path accordingly
 const bcrypt = require('bcryptjs');
+const AuthenticationError = require('../middleware/authError')
 
 class UserService {
   static async insert(email, decryptedPassword) {
     try {
-      const password = await bcrypt.hash(decryptedPassword, 12);
-      const user = await User.create({ email, password });
-      return user.save();
+      if (await User.findOne({ email }) == null){
+        const password = await bcrypt.hash(decryptedPassword, 12);
+        const user = await User.create({ email, password });
+        return user.save(); 
+      }else{
+        throw new AuthenticationError();  
+      }
     } catch (error) {
       console.error(error);
+      throw Error;  
     }
   }
 
@@ -52,26 +58,21 @@ class UserService {
     }
   }
 
-  static async getByEmailAndPassword(email, password){
+  static async getByEmailAndPassword(email, password)  {
     try {
       const user = await User.findOne({ email });
       if (!user) {
-        return 1;
+        throw new AuthenticationError();
       }
-      bcrypt.compare(password, user.password).
-      then((isMatch) => {
-        if(isMatch){
-          return user;
-        }else{
-          return 2;
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-    } 
-    catch (error) {
-      throw error;
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (isMatch) {
+        return user;
+      } else {
+        throw new AuthenticationError();
+      }
+    } catch (error) { 
+      console.error(error);
+      throw error;  
     }
   }
 }

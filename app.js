@@ -7,6 +7,7 @@ const session = require('express-session');
 const MongoDBSession = require('connect-mongodb-session')(session);
 const MongoDbURI = "mongodb+srv://thearasoeung:Theara011802399@cluster0.6wyv2kg.mongodb.net/?retryWrites=true&w=majority";
 const csrf = require('csurf');
+const flash = require('connect-flash');
 const notFoundController = require("./controllers/not-found");
 //Registering routes
 const adminRoute = require("./routes/admin");
@@ -31,10 +32,10 @@ mongooes.connect(MongoDbURI)
 .then((result) => {
   console.log("Connected")
 }).catch((err) => {
-  console.error(err);
+  console.error(err);   
 });
 
-app.use(session({
+app.use(session({ 
   secret: 'mySecret',
   resave: false, 
   saveUninitialized: false,
@@ -42,10 +43,11 @@ app.use(session({
 }))
 
 app.use(csrfProtection);
+app.use(flash());
 
 app.use((req, res, next)=>{
   if(!req.session.user){
-    return next();
+    return next();    
   }
   User.getByPk(req.session.user._id)
   .then((result) => {

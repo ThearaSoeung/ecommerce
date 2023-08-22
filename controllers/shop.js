@@ -9,8 +9,9 @@ exports.getLandingPage = (req, res, next) => {
     path: "/",
     formsCSS: true,
     productCSS: true,
-    activeAddProduct: true,
-    
+    activeAddProduct: true, 
+    flash: req.flash(),
+    message: ''
   });
 };
 

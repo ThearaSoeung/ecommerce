@@ -3,10 +3,16 @@
 <link rel="stylesheet" href="/css/forms.css">
 <link rel="stylesheet" href="/css/product.css">
 <link rel="stylesheet" href="/css/main.css"> 
+<link rel="stylesheet" href="/css/not_found.css"> 
+
 
 </head>
 <body>
     <div class="login-container">
+        <div class="flash-messages">    
+          <% if (message) { %>
+            <div class="flash-message error"><%= message %></div>
+          <% } %>
         <h2>Sign up</h2>
         <form action="/admin/signup" method="post">
             <label for="email">Email:</label>
