@@ -30,6 +30,7 @@
         <input type="text" id="product-name" name="product_description" placeholder="Enter description" required>
       </div>
       
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <input type="submit" class="primary-button" value="Add">
     </form>
   </div>
