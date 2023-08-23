@@ -16,7 +16,7 @@ const csrfProtection = csrf();
 const app = express();
 
 const formData = require('form-data');
-const Mailgun = require('mailgun.js')
+const Mailgun = require('mailgun.js'); 
 
 const apiKey = 'f10bb0546b64fd260dedac006386807d-f0e50a42-cc0a44cb';
 const domain = 'sandbox576bd4a2b2ae4bcaa232784fd9ceac3d.mailgun.org';

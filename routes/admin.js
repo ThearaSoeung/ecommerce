@@ -16,4 +16,10 @@ router.get("/admin/logout", adminController.getAdminLogout);
 router.get("/admin/signup", adminController.getAdminSignup); 
 router.post("/admin/signup", adminController.postAdminSignup); 
 
+router.get("/forgetpassword", adminController.getForgetPass);
+router.post("/forgetpassword", adminController.postForgetPass);
+
+router.get("/resetpassword/:token", adminController.getResetPass);
+router.post("/resetpassword/:token", adminController.postResetPass);
+
 module.exports = router;

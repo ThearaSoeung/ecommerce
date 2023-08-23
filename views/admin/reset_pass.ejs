@@ -5,24 +5,21 @@
 <link rel="stylesheet" href="/css/main.css"> 
 <link rel="stylesheet" href="/css/not_found.css"> 
 
-
 </head>
 <body>
     <div class="login-container">
-        <div class="flash-messages">    
-          <% if (message) { %>
-            <div class="flash-message error"><%= message %></div>
-          <% } %>
-        <h2>Sign up</h2>
-        <form action="/admin/signup" method="post">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            
+        <div class="flash-messages">
+            <% if (message) { %>
+              <div class="flash-message success"><%= message %></div>
+            <% } %>
+        </div>
+        <h2>Set New Password</h2>
+        <form action="/resetpassword/<%=token%>" method="post">            
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
 
-            <label for="password">Confirm Password:</label>
-            <input type="password" id="password" name="password" required>
+            <label for="confirmedpassword">Confirm Password:</label>
+            <input type="password" id="password" name="confirmedpassword" required>
 
             <input type="hidden" name="_csrf" value="<%=csrfToken%>">
             <button type="submit" class="primary-button" >Create</button>
@@ -30,4 +27,4 @@
     </div>
 </body>
 </html>
-<%- include('../includes/footer.ejs') %>  
+<%- include('../includes/footer.ejs') %>

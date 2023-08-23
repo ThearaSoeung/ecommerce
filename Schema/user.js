@@ -21,6 +21,14 @@ const userSchema = new Schema({
     required: true,
     minlength: 6, // Adjust this according to your requirements
   },
+  resetPassToken:{
+    type: String
+  }, 
+
+  resetPassTokenUntil: {
+    type: Date
+  }
+
 }, {
   timestamps: true,
 });

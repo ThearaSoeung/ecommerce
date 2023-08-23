@@ -1,6 +1,7 @@
 const { User } = require('../Schema/user'); // Update the path accordingly
 const bcrypt = require('bcryptjs');
-const AuthenticationError = require('../middleware/authError')
+const AuthenticationError = require('../middleware/authError');
+
 
 class UserService {
   static async insert(email, decryptedPassword) {
@@ -75,6 +76,46 @@ class UserService {
       throw error;  
     }
   }
+  
+  static async generateToken(userId, token){
+    try {
+      const tokenValidation = Date.now() + 60 * 60 * 1000; // Token validity for 1 hour
+    
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: userId }, // Replace `_id` with the actual field that uniquely identifies the user
+        { $set: { resetPassToken: token, resetPassTokenUntil: tokenValidation } },
+        { new: true } // This ensures that the updated user document is returned
+      );
+    
+      return updatedUser;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  static async updatePasswordByToken(token, pass) {
+    try {
+        const password = await bcrypt.hash(pass, 12);
+        const updatedUser = await User.findOneAndUpdate(
+            { resetPassToken: token },
+            {
+                $unset: {
+                    resetPassToken: 1,
+                    resetPassTokenUntil: 1
+                },
+                $set: {
+                    password: password
+                }
+            },
+            { new: true }
+        );
+
+        return updatedUser;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 }
 
 module.exports = UserService;

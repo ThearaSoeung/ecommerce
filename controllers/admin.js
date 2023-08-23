@@ -2,6 +2,8 @@ const { ProductService } = require("../models/Product");
 const { ProductDTO } = require("../dtos/product");
 const User = require("../models/user");
 const { error } = require("console");
+const crypto = require('crypto');
+
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/add_product", {
@@ -31,7 +33,6 @@ exports.postAddProduct = async (req, res, next) => {
 
 exports.getAdminProducts = async (req, res, next) => {
   try{
-    console.log()
     const products = (await ProductService.getAll()).filter( item => item.addedBy.toString() === req.session.user._id.toString())
     res.render("admin/product-admin", {
       pageTitle: "Product",
@@ -136,7 +137,7 @@ exports.postAdminSignup = async (req, res) => {
   const password = req.body.password[0];
   const confirmedPassword = req.body.password[1];
   const messageData = {
-    from: 'Theara <mailgun@sandbox-123.mailgun.org>',
+    from: 'Theara <postmaster@sandbox576bd4a2b2ae4bcaa232784fd9ceac3d.mailgun.org>',
     to: email,
     subject: 'Thanks for Joining Us!',
     html: '<h1>Thanks for Joining Us!</h1><p>A big thank you for signing up with us! We\'re thrilled to have you on board.</p><p>Best regards,<br>Your Name</p>'
@@ -162,3 +163,100 @@ exports.postAdminSignup = async (req, res) => {
     })
   }
 };  
+
+exports.getForgetPass = async (req, res) => {
+  res.render('admin/forget_pass',{
+    message:''
+  })
+}
+
+exports.postForgetPass = async (req, res) => {
+  let message = ''; 
+  const email = req.body.email;
+
+  const user = (await User.getAll()).filter(
+    item => item.email == email
+  )
+
+  if(user.length == 0){
+    message = "User associated with this email not found!"
+  }else{
+    const token = crypto.randomBytes(16).toString('hex');
+    const messageData = {
+      from: 'Theara <postmaster@sandbox576bd4a2b2ae4bcaa232784fd9ceac3d.mailgun.org>',
+      to: email,
+      subject: 'Reset Password Link!',
+      html: `<p>Click here to reset your account password:<p> 
+             <a href="http://localhost:3000/resetpassword/${token}">Reset</a>`
+    }
+    await User.generateToken(user[0]._id.toString(), token)
+    message = "Reset password link has been sent to your email!"
+    res.Client.messages.create(res.Domain, messageData)
+    .then((res)=>{
+      console.log(res);      
+    })
+    .catch((err)=>{
+      console.error(err);
+    })
+  }
+  res.render('admin/forget_pass',{
+    message: message
+  })
+}
+
+exports.getResetPass = async (req, res) => {
+
+  const token = req.params.token; 
+
+  const user = (await User.getAll()).filter(
+    item => item.resetPassToken == token
+  )
+
+  if(user.length == 0){
+    return res.render('shop/index',{
+      message: "Token is invalid or expired!",
+      flash: {}
+    })
+  }
+
+  res.render('admin/reset_pass',{
+    token: token,
+    message: ''
+  })
+}
+exports.postResetPass = async (req, res) => {
+  const token = req.params.token;
+  const pass = req.body.password;
+  //valid pass and confirmedPass 
+  const confirmedPass = req.body.confirmedpassword; 
+
+  
+  if(pass !== confirmedPass){
+    return res.render('admin/reset_pass',{
+      token: req.params.token,
+      message: 'Password and confirmed password is not matched!'
+    })
+  }
+  
+  const user = (await User.getAll()).filter(
+    item => item.resetPassToken == token
+  )
+
+  if(Date.now() > user[0].resetPassTokenUntil.getTime() || user.length == 0){
+    return res.render('shop/index',{
+      message: "The link to reset the password is expired!",
+      flash: {}
+    })
+  }
+
+  await User.updatePasswordByToken(token, confirmedPass)
+  .then(result=>{
+    res.render("admin/login",{
+      flash: {},
+      message: 'Password has been successfully changed.'
+    });
+  })
+  .catch(error=>{
+    console.error(error);
+  }); 
+}
