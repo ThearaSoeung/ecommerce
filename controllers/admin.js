@@ -135,12 +135,27 @@ exports.postAdminSignup = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password[0];
   const confirmedPassword = req.body.password[1];
+  const messageData = {
+    from: 'Theara <mailgun@sandbox-123.mailgun.org>',
+    to: email,
+    subject: 'Thanks for Joining Us!',
+    html: '<h1>Thanks for Joining Us!</h1><p>A big thank you for signing up with us! We\'re thrilled to have you on board.</p><p>Best regards,<br>Your Name</p>'
+  }
   try {
     const user = await User.insert(email,password)
     res.render('admin/login', {
       flash: req.flash() || {},
       message: "Account created successfully"
     });   
+
+    res.Client.messages.create(res.Domain, messageData)
+    .then((res)=>{
+      console.log(res);
+    })
+    .catch((err)=>{
+      console.error(err);
+    })
+
   } catch (error) {
     res.render('admin/signup', {
       message: "Email already exist!"
