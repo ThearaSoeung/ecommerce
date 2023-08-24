@@ -18,7 +18,9 @@ router.post("/cart/update/:id", isAuth, shopController.updateCartById);
 router.get("/shop/orders", isAuth, shopController.getOrders);
 router.post("/shop/orders", isAuth, shopController.postOrders);
 
-router.post("/shop/orders/removed", isAuth, shopController.removedAllOrdersFromUser);
-router.post("/shop/orders/completed", isAuth, shopController.completedAllOrdersFromUser);
+router.post("/shop/orders/removed/:id", isAuth, shopController.removedAllOrdersFromUser);
+router.post("/shop/orders/completed/:id", isAuth, shopController.completedAllOrdersFromUser);
+
+router.get("/shop/invoices/:id", isAuth, shopController.getInvoice);
 
 module.exports = router;

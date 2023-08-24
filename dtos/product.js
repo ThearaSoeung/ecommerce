@@ -9,6 +9,9 @@ class ProductDTO {
       this.createdAt = createdAt;
       this.updatedAt = updatedAt;
     }
+    setImagePath(imagePath){
+      this.imageUrl = imagePath;
+    }
   }
   
   module.exports = { ProductDTO };

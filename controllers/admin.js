@@ -20,10 +20,11 @@ exports.postAddProduct = async (req, res, next) => {
       req.body.product_name,
       req.body.product_price,
       req.body.product_description,
-      req.body.product_image_url, 
+      req.file.path, 
       req.session.user._id.toString(),
       false
     );
+
     await ProductService.insert(productDto)
     res.redirect("/admin");
   } catch (error) {
@@ -78,8 +79,11 @@ exports.postEditedProductById = async (req, res) => {
       req.body.product_name,
       req.body.product_price,
       req.body.product_description,
-      req.body.product_image_url, 
+      req.body.product_image, 
     );
+    if(req.file){
+      updatedField.setImagePath(req.file.path)
+    }
     ProductService.updateProductByPk(updatedField, req.params.id)
     .then(result=>{
       res.redirect("/admin");

@@ -1,7 +1,9 @@
 const { ProductService } = require("../models/Product");
 const Cart = require("../models/cart");
 const Order = require("../models/order");
-const session = require('express-session');
+const path = require("path");
+const fs = require('fs');
+const PDFDocument = require('pdfkit'); 
 
 exports.getLandingPage = (req, res, next) => {
   res.render("shop/index", {
@@ -28,7 +30,6 @@ exports.getProduct = async (req, res, next) => {
     console.log("error:", error);
   }
 };
-
 
 exports.getCart = async (req, res, next) => {
   const userId = req.session.user._id.toString();
@@ -82,14 +83,14 @@ exports.getOrders = async (req, res, next) => {
       productCSS: true,
       activeAddProduct: true,
       products: myProduct,
-      carts: orders[0] === undefined ? [] : orders[0].cart,
-      user: user, 
-      
+      orders: orders[0] === undefined ? [] : orders[0],
+      user: user,   
     });
   } catch (error) {
     console.error(error);
   }
 };
+
 exports.postOrders = async (req, res, next) => {
   try {
     const userId = req.user._id;
@@ -140,14 +141,16 @@ exports.removedAllOrdersFromUser = async (req, res, next) => {
  }
 };
 
-exports.completedAllOrdersFromUser = async (req, res, next) => {
+exports.completedAllOrdersFromUser = async (req, res, next) => {    
   try {
+    const orderId = req.params.id;
     await Order.completeAllOrdersFromUser(req.user._id.toString());
-    res.redirect("/shop/orders");
+    res.redirect(`/shop/invoices/${orderId}`);
  } catch (error) {
     console.error(error);
  }
-};
+};  
+
 exports.getProdectDetailById = (req, res, next) => {
   ProductService.getByPk(req.params.productId)
     .then((product) => {
@@ -181,6 +184,7 @@ exports.addCartById = async (req, res, next) => {
     console.log(error);
   }
 };
+
 exports.removeCartById = async (req, res, next) => {
   await Cart.markAsRemoved(req.params.id)
     .then(async (result) => {
@@ -197,5 +201,63 @@ exports.updateCartById = async (req, res, next) => {
     res.redirect("/cart");
   } catch (error) {
     console.error(error);
+  }
+};
+
+exports.getInvoice = async (req, res, next) => {
+  try {
+    const order = await Order.getByPk(req.params.id);
+
+    if (!order) {
+      return next(new Error('No order found'));
+    }
+
+    if (order.user.toString() !== req.session.user._id.toString()) {
+      return next(new Error('Unauthorized'));
+    }
+
+    const invoicePath = path.join('data', 'invoices', `${order._id}.pdf`);
+    const pdfDoc = new PDFDocument();
+    const writeStream = fs.createWriteStream(invoicePath);
+
+    // Set response headers for PDF
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="${order._id}.pdf"`);
+
+    // Pipe the PDF document to both the file write stream and the HTTP response
+    pdfDoc.pipe(writeStream);
+    pdfDoc.pipe(res);
+
+    // Add content to the PDF
+    pdfDoc.fontSize(18).text('Invoice', { align: 'center' });
+    pdfDoc.moveDown();
+    pdfDoc.fontSize(12).text(`Order ID: ${order._id}`);
+    pdfDoc.fontSize(12).text(`Date: ${order.createdAt.toDateString()}`);
+    pdfDoc.moveDown();
+
+    let totalPrice = 0;
+
+    for (const cartItem of order.cart) {
+      const product = await ProductService.getByPk(cartItem.productId);
+      if (product) {
+        const itemTotalPrice = parseInt(product.price) * cartItem.qty;
+        totalPrice += itemTotalPrice;
+
+        pdfDoc.fontSize(14).text(product.name, { underline: true });
+        pdfDoc.fontSize(12).text(`Quantity: ${cartItem.qty}`);
+        pdfDoc.fontSize(12).text(`Price per unit: ${product.price}`);
+        pdfDoc.fontSize(12).text(`Total Price: ${itemTotalPrice} USD`);
+        pdfDoc.moveDown();
+      }
+    }
+
+    pdfDoc.fontSize(16).text(`Total Price for all Items: ${totalPrice} USD`, { align: 'right' });
+
+    // End the PDF document
+    pdfDoc.end();
+
+  } catch (err) {
+    console.error(err);
+    return next(err);
   }
 };

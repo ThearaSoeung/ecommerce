@@ -6,14 +6,14 @@ class ProductService {
       return await Product.create(updatedProduct);
     } catch (error) {
       console.error(error);
-    }
+    } 
   }
 
   static async getAll() {
     try {
       return await Product.find();
     } catch (error) {
-      console.error(error);
+      console.error(error); 
     }
   }
 

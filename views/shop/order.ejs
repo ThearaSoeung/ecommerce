@@ -4,14 +4,13 @@
 <link rel="stylesheet" href="/css/main.css" />
 
 <h1>Orders</h1>
-
 <div class="product">
-  <% if (carts.length === 0) { %>
+  <% if (orders.length === 0) { %>
     <h3>You don't have any orders.</h3>
   <% } else { %>
     <ul>
       <% let totalPrice = 0; %>
-      <%  carts.forEach(cartItem => {
+      <%  orders.cart.forEach(cartItem => {
           const productItem = products.find(p => p._id.equals(cartItem.productId));
           const itemTotalPrice = parseInt(productItem.price) * cartItem.qty;
           totalPrice += itemTotalPrice;
@@ -30,11 +29,12 @@
         </div>
       <% }); %>
       <h2 class="total-cart-price">Total Price for all Items: <%= totalPrice %> USD</h2>
-      <form action="/shop/orders/completed" method="POST">
+      <a href="/shop/invoices/<%=orders._id%>">Download Invoice</a>
+      <form action="/shop/orders/completed/<%=orders._id%>" method="POST">
         <input type="hidden" name="_csrf" value="<%=csrfToken%>">
         <button class="primary-button" name="order">Order</button>
       </form>
-      <form action="/shop/orders/removed" method="POST">
+      <form action="/shop/orders/removed/<%=orders._id%>" method="POST">
         <input type="hidden" name="_csrf" value="<%=csrfToken%>">
         <button class="primary-button" name="remove">Remove all orders</button>
       </form>
