@@ -13,7 +13,6 @@
   <% } else { %>
     <% availableProducts.forEach(product => { %>
       <div class="product">
-        <% console.log(baseUrl) %>
         <img src="/<%= product.imageUrl %>" alt="Product Image" />
         <div class="product-info">
           <h1 class="product-title"><%= product.name %></h1>
@@ -32,6 +31,11 @@
         </div>
       </div>
     <% }) %>
+    <div class="pagination">
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <a href="/shop/products?page=<%= i %>" class="<%= currentPage === i ? 'active' : '' %>"><%= i %></a>
+      <% } %>
+    </div>
   <% } %>
 
   <%- include('../partials/footer.ejs') %>

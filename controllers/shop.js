@@ -4,6 +4,7 @@ const Order = require("../models/order");
 const path = require("path");
 const fs = require('fs');
 const PDFDocument = require('pdfkit'); 
+const { Product } = require("../Schema/product");
 
 exports.getLandingPage = (req, res, next) => {
   res.render("shop/index", {
@@ -18,14 +19,24 @@ exports.getLandingPage = (req, res, next) => {
 };
 
 exports.getProduct = async (req, res, next) => {
+
+  const itemsPerPage = 3; 
+  const page = parseInt(req.query.page) || 1;
   try {
-    const products = await ProductService.getAll();
+    const totalProducts = await Product.countDocuments({});
+    const totalPage = Math.ceil(totalProducts / itemsPerPage); 
+
+    const Products = await Product.find({})
+      .skip((page-1)*itemsPerPage)
+      .limit(itemsPerPage)
+
     res.render("shop/product", {
       pageTitle: "Product",
       formsCSS: true,
       productCSS: true,
-      products: products,
-      baseUrl: res.locals.baseUrl
+      products: Products,
+      currentPage: page, 
+      totalPages: totalPage,
     });
   } catch (error) {
     console.log("error:", error);

@@ -30,3 +30,18 @@ h1 {
   color: #333;
   margin-bottom: 10px;
 }
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination a {
+  margin: 0 5px;
+  text-decoration: none;
+  color: #333;
+}
+
+.pagination a.active {
+  font-weight: bold;
+}

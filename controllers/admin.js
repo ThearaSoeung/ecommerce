@@ -3,6 +3,7 @@ const { ProductDTO } = require("../dtos/product");
 const User = require("../models/user");
 const { error } = require("console");
 const crypto = require('crypto');
+const deleteFileHelper = require('../util/deleteFile').deleteFileHelper
 
 
 exports.getAddProduct = (req, res, next) => {
@@ -24,8 +25,8 @@ exports.postAddProduct = async (req, res, next) => {
       req.session.user._id.toString(),
       false
     );
-
-    //await ProductService.insert(productDto)
+      
+    await ProductService.insert(productDto)
     res.redirect("/admin");
   } catch (error) {
     console.error(error);
@@ -75,6 +76,7 @@ exports.getEditedProductById = (req, res) => {
 };
 
 exports.postEditedProductById = async (req, res) => {
+  try {
     const updatedField = new ProductDTO(
       req.body.product_name,
       req.body.product_price,
@@ -82,15 +84,17 @@ exports.postEditedProductById = async (req, res) => {
       req.body.product_image, 
     );
     if(req.file){
+      const product = await ProductService.getByPk(req.params.id); 
+      deleteFileHelper(product.imageUrl); 
       updatedField.setImagePath(req.file.path)
     }
-    ProductService.updateProductByPk(updatedField, req.params.id)
-    .then(result=>{
+    await ProductService.updateProductByPk(updatedField, req.params.id)
       res.redirect("/admin");
-    })
-    .catch (error=>{ 
-      console.error(error);
-    })
+  } 
+  catch (error) {
+    console.error("Error updating product:", error);
+    res.status(500).send("An error occurred while updating the product.");
+  }
 };
 
 exports.getAdminLogin = async (req, res) => {
@@ -145,7 +149,7 @@ exports.postAdminSignup = async (req, res) => {
     to: email,
     subject: 'Thanks for Joining Us!',
     html: '<h1>Thanks for Joining Us!</h1><p>A big thank you for signing up with us! We\'re thrilled to have you on board.</p><p>Best regards,<br>Your Name</p>'
-  }
+  } 
   try {
     const user = await User.insert(email,password)
     res.render('admin/login', {
