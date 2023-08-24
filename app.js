@@ -35,7 +35,8 @@ const fileStorage = multer.diskStorage({
     cb(null, 'images');
   },
   filename: (req, file, cb) => {
-    cb(null, new Date().toISOString()+'-'+file.originalname);
+    const name = new Date().toISOString()+'-'+file.originalname; 
+    cb(null, '/'+name);
   }
 })
 
@@ -57,6 +58,10 @@ app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'));
 //Middleware to serve static files from the public folder
 app.use(express.static(path.join(__dirname, "public")));
 app.use('/images', express.static(path.join(__dirname, "images")));
+app.use((req, res, next) => {
+  res.locals.baseUrl = req.protocol + '://' + req.get('host');
+  next();
+});
 
 app.set("view engine", "ejs");
 app.set("views", "views");

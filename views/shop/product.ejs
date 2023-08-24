@@ -1,5 +1,5 @@
-<%- include('../includes/header.ejs') %>
-<%- include('../includes/navigation', {isLogin: isAuthenticated}); %>
+<%- include('../partials/header.ejs') %>
+<%- include('../partials/navigation', {isLogin: isAuthenticated}); %>
 <link rel="stylesheet" href="/css/product.css" />
 <link rel="stylesheet" href="/css/main.css" />
 
@@ -13,7 +13,8 @@
   <% } else { %>
     <% availableProducts.forEach(product => { %>
       <div class="product">
-        <img src="<%= product.imageUrl %>" alt="Product Image" />
+        <% console.log(baseUrl) %>
+        <img src="/<%= product.imageUrl %>" alt="Product Image" />
         <div class="product-info">
           <h1 class="product-title"><%= product.name %></h1>
           <p class="product-description"><%= product.description %></p>
@@ -33,6 +34,6 @@
     <% }) %>
   <% } %>
 
-  <%- include('../includes/footer.ejs') %>
+  <%- include('../partials/footer.ejs') %>
 </body>
 </html>

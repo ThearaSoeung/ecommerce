@@ -25,7 +25,7 @@ exports.postAddProduct = async (req, res, next) => {
       false
     );
 
-    await ProductService.insert(productDto)
+    //await ProductService.insert(productDto)
     res.redirect("/admin");
   } catch (error) {
     console.error(error);

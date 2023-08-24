@@ -25,6 +25,7 @@ exports.getProduct = async (req, res, next) => {
       formsCSS: true,
       productCSS: true,
       products: products,
+      baseUrl: res.locals.baseUrl
     });
   } catch (error) {
     console.log("error:", error);
