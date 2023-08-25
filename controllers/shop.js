@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require('fs');
 const PDFDocument = require('pdfkit'); 
 const { Product } = require("../Schema/product");
+const Stripe = require('stripe')('sk_test_51MYMNoEHR8BbY6cKtIC0pKsAR9w5cK0l6rfGTu5gZxbYMGAcZV6eVzlJpzCOTd3NdkTOaKS7KhC8zwBBHH1WnYFX005GbRoFhh')
 
 exports.getLandingPage = (req, res, next) => {
   res.render("shop/index", {
@@ -23,18 +24,22 @@ exports.getProduct = async (req, res, next) => {
   const itemsPerPage = 3; 
   const page = parseInt(req.query.page) || 1;
   try {
-    const totalProducts = await Product.countDocuments({});
+    const totalProducts = await Product.countDocuments({
+      isRemoved: false
+    });
     const totalPage = Math.ceil(totalProducts / itemsPerPage); 
 
-    const Products = await Product.find({})
-      .skip((page-1)*itemsPerPage)
-      .limit(itemsPerPage)
+    const products = await Product.find({
+      isRemoved: false
+    })
+    .skip((page - 1) * itemsPerPage)
+    .limit(itemsPerPage);
 
     res.render("shop/product", {
       pageTitle: "Product",
       formsCSS: true,
       productCSS: true,
-      products: Products,
+      products: products,
       currentPage: page, 
       totalPages: totalPage,
     });
@@ -67,7 +72,6 @@ exports.getCart = async (req, res, next) => {
 
 exports.getOrders = async (req, res, next) => {
   try {
-    const myProduct = [];
     const user = req.user; 
     let orders = [];
     orders = (await Order.getAll()).filter(
@@ -78,26 +82,35 @@ exports.getOrders = async (req, res, next) => {
     const product = (await ProductService.getAll()).filter(
       item => item.isRemoved === false
     )
+    
+    const myProduct = [];
+    let totalPrice = 0; // Initialize the total price
+    
     orders.forEach(orderItem => {
       product.forEach(productItem => {
         orderItem.cart.forEach(cartItem => {
           if (cartItem.productId.toString() === productItem._id.toString()) {
             myProduct.push(productItem);
+            const itemTotalPrice = parseInt(productItem.price) * cartItem.qty;
+            totalPrice += itemTotalPrice;
           }
         });
       }); 
     });
 
-    res.render("shop/order", {
-      pageTitle: "Cart",
-      path: "/",
-      formsCSS: true,
-      productCSS: true,
-      activeAddProduct: true,
-      products: myProduct,
-      orders: orders[0] === undefined ? [] : orders[0],
-      user: user,   
-    });
+      res.render("shop/order", {
+        pageTitle: "Cart",
+        path: "/",
+        formsCSS: true,
+        productCSS: true,
+        activeAddProduct: true,
+        products: myProduct,
+        orders: orders[0] === undefined ? [] : orders[0],
+        user: user,
+        totalPrice: totalPrice,
+        //sessionId: session.id
+      });
+    // })
   } catch (error) {
     console.error(error);
   }
@@ -105,6 +118,7 @@ exports.getOrders = async (req, res, next) => {
 
 exports.postOrders = async (req, res, next) => {
   try {
+    
     const userId = req.user._id;
 
     const carts = (await Cart.findCartByUserId(userId.toString())).filter(
@@ -155,13 +169,64 @@ exports.removedAllOrdersFromUser = async (req, res, next) => {
 
 exports.completedAllOrdersFromUser = async (req, res, next) => {    
   try {
-    const orderId = req.params.id;
-    await Order.completeAllOrdersFromUser(req.user._id.toString());
-    res.redirect(`/shop/invoices/${orderId}`);
+
+    const orderId = req.params.id; 
+    let orders = [];
+
+    orders = (await Order.getAll()).filter(
+      item => item.isCompleted === false 
+      && item.user._id.toString() === req.session.user._id.toString()
+      && item.isRemoved === false
+    );
+    const product = (await ProductService.getAll()).filter(
+      item => item.isRemoved === false
+    );
+    const lineItems = [];
+
+    orders.forEach(orderItem => {
+      orderItem.cart.forEach(cartItem => {
+        const productItem = product.find(p => p._id.equals(cartItem.productId));
+    
+        if (productItem) {
+          const lineItem = {
+            price_data: {
+              currency: 'USD',
+              product_data:{
+                name: productItem.name,
+              },
+              unit_amount: productItem.price * 100.00, 
+            },
+            quantity: cartItem.qty,
+          };
+    
+          lineItems.push(lineItem);
+        }
+      }); 
+    });
+
+    const session = await Stripe.checkout.sessions.create({
+      line_items: lineItems,
+      mode: 'payment',
+      success_url: req.protocol + '://' + req.get('host') + `/orders/finished/${orderId}`, 
+      cancel_url: req.protocol + '://' + req.get('host') + '/shop/orders'  
+    }); 
+
+    res.redirect(303, session.url); 
+    
  } catch (error) {
     console.error(error);
  }
-};  
+}; 
+
+exports.markOrdersAsCompeleted = async (req, res, next) => {
+  try {
+    const orderId = req.params.id;
+    await Order.completeAllOrdersFromUser(req.user._id.toString());
+    res.redirect(`/shop/invoices/${orderId}`);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 exports.getProdectDetailById = (req, res, next) => {
   ProductService.getByPk(req.params.productId)

@@ -25,7 +25,7 @@ exports.postAddProduct = async (req, res, next) => {
       req.session.user._id.toString(),
       false
     );
-      
+
     await ProductService.insert(productDto)
     res.redirect("/admin");
   } catch (error) {
@@ -58,20 +58,30 @@ exports.deleteProductById = (req, res) => {
   });
 };
 
-exports.getEditedProductById = (req, res) => {
+exports.editProductById = (req, res) => {
   ProductService.getByPk(req.params.id)
     .then((product) => {
-      res.render("admin/edit_product", {
-        pageTitle: "Admin edit",
-        path: "/",
-        formsCSS: true,
-        productCSS: true,
-        activeAddProduct: true,
-        product: product,
-      });
+      if (req.headers.accept === 'application/json') {
+        res.status(200).json(product); // Send JSON response for AJAX
+      } else {
+        res.render("admin/edit_product", {
+          pageTitle: "Admin edit",
+          path: "/",
+          formsCSS: true,
+          productCSS: true,
+          activeAddProduct: true,
+          product: product,
+        });
+      }
     })
     .catch((err) => {
       console.log(err);
+      if (req.headers.accept === 'application/json') {
+        res.status(500).json({ error: "An error occurred." });
+      } else {
+        // Handle the error in an appropriate way for regular requests
+        res.redirect("/admin");
+      }
     });
 };
 
@@ -267,4 +277,20 @@ exports.postResetPass = async (req, res) => {
   .catch(error=>{
     console.error(error);
   }); 
+
+};
+  exports.deleteProduct = (req, res) => {
+    ProductService.deleteProductById(req.params.id)
+    .then(() => {
+      if (req.headers.accept === 'application/json') {
+        res.status(204).end(); // Send a no-content response for AJAX
+      } else {
+        res.redirect("/admin");
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ error: "An error occurred." }); // Or handle the error in an appropriate way
+    });
+
 }

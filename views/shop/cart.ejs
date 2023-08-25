@@ -40,7 +40,7 @@
       <h2 class="total-cart-price">Total Price for all Items: <%= totalPrice %> USD</h2>
       <form action="/shop/orders" method="POST">
         <input type="hidden" name="_csrf" value="<%=csrfToken%>">
-        <button class="primary-button">Order</button>
+        <button class="primary-button">Add to Orders</button>
       </form>
     </ul>
   <% } %>

@@ -8,10 +8,12 @@ router.get("/admin/add", isAuth, adminController.getAddProduct);
 router.post("/admin/add", isAuth, adminController.postAddProduct);
 
 
-router.get("/admin/edit/:id", isAuth, adminController.getEditedProductById);
+router.get("/admin/edit/:id", isAuth, adminController.editProductById);
 router.post("/admin/edit/:id", isAuth, adminController.postEditedProductById);
 router.get("/admin/delete/:id", isAuth, adminController.deleteProductById);
 router.get("/admin", isAuth, adminController.getAdminProducts);
+
+router.delete("/admin/delete/:id", isAuth, adminController.deleteProduct);
 
 router.get("/admin/login", adminController.getAdminLogin); 
 router.post("/admin/login", adminController.postAdminLogin); 

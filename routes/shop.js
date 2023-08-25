@@ -20,6 +20,7 @@ router.post("/shop/orders", isAuth, shopController.postOrders);
 
 router.post("/shop/orders/removed/:id", isAuth, shopController.removedAllOrdersFromUser);
 router.post("/shop/orders/completed/:id", isAuth, shopController.completedAllOrdersFromUser);
+router.get("/orders/finished/:id", isAuth, shopController.markOrdersAsCompeleted);
 
 router.get("/shop/invoices/:id", isAuth, shopController.getInvoice);
 

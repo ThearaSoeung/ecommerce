@@ -9,11 +9,9 @@
     <h3>You don't have any orders.</h3>
   <% } else { %>
     <ul>
-      <% let totalPrice = 0; %>
       <%  orders.cart.forEach(cartItem => {
           const productItem = products.find(p => p._id.equals(cartItem.productId));
           const itemTotalPrice = parseInt(productItem.price) * cartItem.qty;
-          totalPrice += itemTotalPrice;
       %>
         <div class="cart-item">
           <div class="cart-item-details">
@@ -32,7 +30,7 @@
       <a href="/shop/invoices/<%=orders._id%>">Download Invoice</a>
       <form action="/shop/orders/completed/<%=orders._id%>" method="POST">
         <input type="hidden" name="_csrf" value="<%=csrfToken%>">
-        <button class="primary-button" name="order">Order</button>
+        <button class="primary-button" name="order" id="order-btn">Order</button>
       </form>
       <form action="/shop/orders/removed/<%=orders._id%>" method="POST">
         <input type="hidden" name="_csrf" value="<%=csrfToken%>">
@@ -43,3 +41,4 @@
 </div>
 
 <%- include('../partials/footer.ejs') %>
+
