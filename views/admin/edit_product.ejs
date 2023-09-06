@@ -9,8 +9,8 @@
   <div class="container">
     <h1>Edit Product</h1>
     <form method="post" enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="product-name">Product Name:</label>
+      <div class="form-group">
+        <label for="product-name">Product Name:</label>
           <input type="text" id="product-name" name="product_name" value="<%=product.name%>" placeholder="<%=product.title%>"> 
         </div>
 
@@ -28,7 +28,7 @@
         <label for="product-name">Description</label>
         <input type="text" id="product-name" name="product_description" value="<%= product.description %>" placeholder="<%= product.descriptions %>">
       </div>
-      
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <input type="submit" class="primary-button" value="Add">
     </form>
   </div>
